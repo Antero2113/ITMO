@@ -6,10 +6,10 @@ port = 9746
 listen_addresses = 'localhost'
 max_connections = 7
 
-shared_buffers = 4GB
+shared_buffers = 2GB
 temp_buffers = 64MB
 work_mem = 128MB
-effective_cache_size = 6GB
+effective_cache_size = 5GB
 
 fsync = on
 commit_delay = 100000

@@ -36,11 +36,15 @@ chmod +x 01_init_cluster.sh 02_create_dirs.sh 03_configure_postgresql.conf.sh 04
 
 mkdir -p $HOME/zfb92/log
 
-psql -p 9746 -d postgres -f 06_create_objects.sql
+psql -p 9746 -d postgres -f 05_role_tablespaces.sql
 psql -p 9746 -d loudwhiteuser -U testuser -f 06_bd_content.sql
 psql -p 9746 -d loudwhiteuser -U testuser -f 07_verify.sql
 
 pg_ctl -D /var/db/postgres2/zfb92 reload
+```
+
+```
+tail -20 /var/db/postgres2/zfb92/log/postgresql.log
 ```
 
 ### Локали
