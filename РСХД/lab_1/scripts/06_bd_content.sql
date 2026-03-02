@@ -22,6 +22,11 @@ CREATE TABLE sales_2024_q4 PARTITION OF sales
     FOR VALUES FROM ('2024-10-01') TO ('2025-01-01')
     TABLESPACE opy85;
 
+CREATE INDEX idx_sales_2024_q1_amount ON sales_2024_q1(amount) TABLESPACE kls10;
+CREATE INDEX idx_sales_2024_q2_amount ON sales_2024_q2(amount) TABLESPACE opy85;
+CREATE INDEX idx_sales_2024_q3_amount ON sales_2024_q3(amount) TABLESPACE kls10;
+CREATE INDEX idx_sales_2024_q4_amount ON sales_2024_q4(amount) TABLESPACE opy85;
+
 INSERT INTO sales (sale_date, amount, product_id) VALUES
     ('2024-01-15', 100.50, 1),
     ('2024-02-20', 200.75, 2),
@@ -50,5 +55,3 @@ INSERT INTO products (name, price) VALUES
     ('Product C', 300.00),
     ('Product D', 400.00),
     ('Product E', 500.00);
-
-
