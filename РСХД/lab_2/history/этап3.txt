@@ -1,0 +1,276 @@
+PS C:\Users\Admin\Documents\ITMO\РСХД\ITMO> ssh pg196
+(postgres2@pg196) Password for postgres2@pg196.cs.ifmo.ru:
+Last login: Sat Mar 28 23:49:19 2026 from helios.cs.ifmo.ru
+[postgres2@pg196 ~]$ show $PGDATA
+-bash: show: команда не найдена
+[postgres2@pg196 ~]$ echo $PGDATA
+
+[postgres2@pg196 ~]$ ps aux | grep postgres | grep -v grep
+postgres2 70034  0,0  0,0 14604  4536 60  SsJ  08:06   0:00,01 -bash (bash)
+postgres2 70033  0,0  0,0 22800 10640  -  SJ   08:06   0:00,02 sshd: postgres2@pts/60 (sshd)
+postgres2 70052  0,0  0,0 13428  3144 60  R+J  08:06   0:00,00 ps aux
+[postgres2@pg196 ~]$ pg_ctl status
+pg_ctl: каталог баз данных не указан и переменная окружения PGDATA не установлена
+Для дополнительной информации попробуйте "pg_ctl --help".
+[postgres2@pg196 ~]$ pg_ctl -D $HOME/zfb92 -l $HOME/zfb92/log/postgresql.log start
+ожидание запуска сервера.... готово
+сервер запущен
+[postgres2@pg196 ~]$ ls -la
+total 77
+drwxr-xr-x   7 postgres2 postgres    25 29 марта 02:06 .
+drwxr-xr-x  23 root      wheel       25 28 авг.   2024 ..
+-rw-------   1 postgres2 postgres 13656 29 марта 02:06 .bash_history
+-rw-------   1 postgres2 postgres    20 16 марта 10:53 .lesshst
+-rw-r--r--   1 postgres2 postgres    85  2 марта 11:02 .profile
+-rw-------   1 postgres2 postgres  5511 16 марта 10:28 .psql_history
+drwx------   2 postgres2 postgres     5 26 марта 08:14 .ssh
+-rwxr-xr-x   1 postgres2 postgres   126 16 марта 10:28 01_init_cluster.bash
+-rwxr-xr-x   1 postgres2 postgres   780 16 марта 10:28 02_configure_connections.bash
+-rwxr-xr-x   1 postgres2 postgres   520 16 марта 10:28 03_configure_bd_server.bash
+-rwxr-xr-x   1 postgres2 postgres    84 16 марта 10:28 04_start_server.bash
+-rw-r--r--   1 postgres2 postgres   446 16 марта 10:28 05_role_tablespaces.sql
+-rw-r--r--   1 postgres2 postgres  1789 16 марта 10:28 06_bd_content.sql
+-rw-r--r--   1 postgres2 postgres  1144 16 марта 10:28 07_verify.sql
+-rwxr-xr-x   1 postgres2 postgres   148 16 марта 10:28 08_cleanup.bash
+drwx------   3 postgres2 postgres     3  2 марта 06:00 kls10
+drwx------   3 postgres2 postgres     3  2 марта 06:00 opy85
+-rwxr-xr-x   1 postgres2 postgres   510 28 марта 23:55 pg_backup.bash
+-rwxr-xr-x   1 postgres2 postgres    47 16 марта 10:28 psql_admin.bash
+-rwxr-xr-x   2 postgres2 postgres    81 16 марта 10:28 see.bash
+-rwxr-xr-x   2 postgres2 postgres    81 16 марта 10:28 some.sht.happens.rm
+-rwxr-xr-x   1 postgres2 postgres    64  2 марта 10:59 testuser
+-rwxr-xr-x   1 postgres2 postgres    64 16 марта 10:28 testuser.bash
+drwx------   3 postgres2 postgres     4  2 марта 05:50 xda54
+drwx------  19 postgres2 postgres    28 29 марта 08:07 zfb92
+[postgres2@pg196 ~]$ cd xda54
+[postgres2@pg196 ~/xda54]$ ls -la
+total 3950
+drwx------  3 postgres2 postgres        4  2 марта 05:50 .
+drwxr-xr-x  7 postgres2 postgres       25 29 марта 02:06 ..
+-rw-------  1 postgres2 postgres 16777216 29 марта 08:07 000000010000000000000001
+drwx------  2 postgres2 postgres        2  2 марта 05:50 archive_status
+[postgres2@pg196 ~/xda54]$ cd ..
+[postgres2@pg196 ~]$ cd zfb92
+[postgres2@pg196 ~/zfb92]$ ls -la
+total 50
+drwx------  19 postgres2 postgres   28 29 марта 08:07 .
+drwxr-xr-x   7 postgres2 postgres   25 29 марта 02:06 ..
+drwx------   6 postgres2 postgres    6  2 марта 06:00 base
+-rw-------   1 postgres2 postgres   26 29 марта 08:07 current_logfiles
+drwx------   2 postgres2 postgres   65 29 марта 08:08 global
+drwxr-xr-x   2 postgres2 postgres    3  2 марта 05:51 log
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_commit_ts
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_dynshmem
+-rw-------   1 postgres2 postgres  502  2 марта 05:50 pg_hba.conf
+-rw-------   1 postgres2 postgres 2781  2 марта 05:50 pg_ident.conf
+drwx------   4 postgres2 postgres    5 29 марта 05:00 pg_logical
+drwx------   4 postgres2 postgres    4  2 марта 05:50 pg_multixact
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_notify
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_replslot
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_serial
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_snapshots
+drwx------   2 postgres2 postgres    2 29 марта 08:07 pg_stat
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_stat_tmp
+drwx------   2 postgres2 postgres    3  2 марта 05:50 pg_subtrans
+drwx------   2 postgres2 postgres    4  2 марта 06:00 pg_tblspc
+drwx------   2 postgres2 postgres    2  2 марта 05:50 pg_twophase
+-rw-------   1 postgres2 postgres    3  2 марта 05:50 PG_VERSION
+lrwx------   1 postgres2 postgres   23  2 марта 05:50 pg_wal -> /var/db/postgres2/xda54
+drwx------   2 postgres2 postgres    3  2 марта 05:50 pg_xact
+-rw-------   1 postgres2 postgres   88  2 марта 05:50 postgresql.auto.conf
+-rw-------   1 postgres2 postgres  383  2 марта 06:12 postgresql.conf
+-rw-------   1 postgres2 postgres   55 29 марта 08:07 postmaster.opts
+-rw-------   1 postgres2 postgres   90 29 марта 08:07 postmaster.pid
+[postgres2@pg196 ~/zfb92]$ cd ..
+[postgres2@pg196 ~]$ chmod +x pg3_*
+[postgres2@pg196 ~]$ ./pg3_failure.bash 
+ожидание завершения работы сервера.... готово
+сервер остановлен
+[postgres2@pg196 ~]$ ./pg3_check_failure.bash 
+[postgres2@pg196 ~]$ chmod +x pg3_check_failure.bash
+[postgres2@pg196 ~]$ ./pg3_check_failure.bash
+psql: ошибка: подключиться к серверу через сокет "/tmp/.s.PGSQL.9746" не удалось: No such file or directory
+        Сервер действительно работает локально и принимает подключения через этот сокет?
+exit code: 2
+[postgres2@pg196 ~]$ ./pg3_restore_claster.bash 
+Файлы, относящиеся к этой СУБД, будут принадлежать пользователю "postgres2".
+От его имени также будет запускаться процесс сервера.
+
+Кластер баз данных будет инициализирован с локалью "ru_RU.KOI8-R".
+Выбрана конфигурация текстового поиска по умолчанию "russian".
+
+Контроль целостности страниц данных отключён.
+
+исправление прав для существующего каталога /var/db/postgres2/zfb92... ок
+создание подкаталогов... ок
+выбирается реализация динамической разделяемой памяти... posix
+выбирается значение max_connections по умолчанию... 100
+выбирается значение shared_buffers по умолчанию... 128MB
+выбирается часовой пояс по умолчанию... Europe/Moscow
+создание конфигурационных файлов... ок
+выполняется подготовительный скрипт... ок
+выполняется заключительная инициализация... ок
+сохранение данных на диске... ок
+
+initdb: предупреждение: включение метода аутентификации "trust" для локальных подключений
+initdb: подсказка: Другой метод можно выбрать, отредактировав pg_hba.conf или ещё раз запустив initdb с ключом -A, --auth-local или --auth-host.
+
+Готово. Теперь вы можете запустить сервер баз данных:
+
+    pg_ctl -D /var/db/postgres2/zfb92 -l файл_журнала start
+
+ожидание запуска сервера.... готово
+сервер запущен
+psql: ошибка: подключиться к серверу через сокет "/tmp/.s.PGSQL.9746" не удалось: ВАЖНО:  роль "testuser" не существует
+psql: ошибка: подключиться к серверу через сокет "/tmp/.s.PGSQL.9746" не удалось: ВАЖНО:  роль "testuser" не существует
+[postgres2@pg196 ~]$
+[postgres2@pg196 ~]$ chmod +x pg3_restore_claster.bash
+[postgres2@pg196 ~]$ ./pg3_restore_claster.bash
+Файлы, относящиеся к этой СУБД, будут принадлежать пользователю "postgres2".
+От его имени также будет запускаться процесс сервера.
+
+Кластер баз данных будет инициализирован с локалью "ru_RU.KOI8-R".
+Выбрана конфигурация текстового поиска по умолчанию "russian".
+
+Контроль целостности страниц данных отключён.
+
+initdb: ошибка: каталог "/var/db/postgres2/zfb92" существует, но он не пуст
+initdb: подсказка: Если вы хотите создать новую систему баз данных, удалите или очистите каталог "/var/db/postgres2/zfb92", либо при запуске initdb в качестве пути укажите не "/var/db/postgres2/zfb92".    
+pg_ctl: возможно, уже работает другой сервер; всё же пробуем запустить этот сервер
+ожидание запуска сервера.... прекращение ожидания
+pg_ctl: не удалось запустить сервер
+Изучите протокол выполнения.
+CREATE TABLESPACE
+CREATE TABLESPACE
+CREATE ROLE
+GRANT
+CREATE DATABASE
+GRANT
+GRANT
+[postgres2@pg196 ~]$ ./pg3_restore_from_backup.bash
+ls: /var/db/postgres2/backups/pg_full_*.sql.gz: No such file or directory
+zcat: standard input is a terminal -- ignoring
+[postgres2@pg196 ~]$
+[postgres2@pg196 ~]$ chmod +x pg3_restore_from_backup.bash
+[postgres2@pg196 ~]$ ./pg3_restore_from_backup.bash
+(postgres2@pg199.cs.ifmo.ru) Password for postgres2@pg199.cs.ifmo.ru:
+(postgres2@pg199.cs.ifmo.ru) Password for postgres2@pg199.cs.ifmo.ru:
+pg_full_20260328_235603.sql.gz                                                                                                                                             100% 1438   110.4KB/s   00:00    
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 строка)
+
+SET
+SET
+SET
+SET
+SET
+SET
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER SEQUENCE
+ALTER SEQUENCE
+SET
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER SEQUENCE
+ALTER SEQUENCE
+SET
+CREATE TABLE
+ALTER TABLE
+SET
+CREATE TABLE
+ALTER TABLE
+SET
+CREATE TABLE
+ALTER TABLE
+SET
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+COPY 5
+COPY 3
+COPY 3
+COPY 3
+COPY 3
+ setval
+--------
+      5
+(1 строка)
+
+ setval 
+--------
+     12
+(1 строка)
+
+SET
+ALTER TABLE
+SET
+CREATE INDEX
+SET
+CREATE INDEX
+SET
+CREATE INDEX
+SET
+CREATE INDEX
+SET
+CREATE INDEX
+ALTER INDEX
+ALTER INDEX
+ALTER INDEX
+ALTER INDEX
+[postgres2@pg196 ~]$ ./pg3_check.bash 
+ожидание завершения работы сервера...... готово
+сервер остановлен
+ожидание запуска сервера....2026-03-29 05:31:57.875 GMT [71794] СООБЩЕНИЕ:  передача вывода в протокол процессу сбора протоколов
+2026-03-29 05:31:57.875 GMT [71794] ПОДСКАЗКА:  В дальнейшем протоколы будут выводиться в каталог "log".
+ готово
+сервер запущен
+                                                                                 version
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 16.4 on amd64-portbld-freebsd14.1, compiled by FreeBSD clang version 18.1.6 (https://github.com/llvm/llvm-project.git llvmorg-18.1.6-0-g1118c2e05e67), 64-bit
+(1 строка)
+
+                                                              Список баз данных
+      Имя      | Владелец  | Кодировка | Провайдер локали |  LC_COLLATE  |   LC_CTYPE   | локаль ICU | Правила ICU |      Права доступа
+---------------+-----------+-----------+------------------+--------------+--------------+------------+-------------+-------------------------
+ loudwhiteuser | testuser  | KOI8R     | libc             | ru_RU.KOI8-R | ru_RU.KOI8-R |            |             |
+ postgres      | postgres2 | KOI8R     | libc             | ru_RU.KOI8-R | ru_RU.KOI8-R |            |             |
+ template0     | postgres2 | KOI8R     | libc             | ru_RU.KOI8-R | ru_RU.KOI8-R |            |             | =c/postgres2           +
+               |           |           |                  |              |              |            |             | postgres2=CTc/postgres2
+ template1     | postgres2 | KOI8R     | libc             | ru_RU.KOI8-R | ru_RU.KOI8-R |            |             | =c/postgres2           +
+               |           |           |                  |              |              |            |             | postgres2=CTc/postgres2+
+               |           |           |                  |              |              |            |             | testuser=c/postgres2
+(4 строки)
+
+                       Список отношений
+ Схема  |      Имя      |           Тип            | Владелец
+--------+---------------+--------------------------+----------
+ public | products      | таблица                  | testuser
+ public | sales         | секционированная таблица | testuser
+ public | sales_2024_q1 | таблица                  | testuser
+ public | sales_2024_q2 | таблица                  | testuser
+ public | sales_2024_q3 | таблица                  | testuser
+ public | sales_2024_q4 | таблица                  | testuser
+(6 строк)
+
+  spcname
+------------
+ pg_default
+ pg_global
+ kls10
+ opy85
+(4 строки)
