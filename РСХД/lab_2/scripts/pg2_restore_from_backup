@@ -80,9 +80,6 @@ echo "      Используется бэкап: $(basename $LATEST_BACKUP)"
 
 zcat $LATEST_BACKUP |  psql -p $PGPORT -U $PGUSER -d loudwhiteuser
 UNPACKED="${LATEST_BACKUP%.gz}"
-gunzip -c "$LATEST_BACKUP" > "$UNPACKED"
-
-rm -f "$UNPACKED"
 
 echo "[9/9] Перезапуск PostgreSQL и проверка..."
 pg_ctl -D $PGDATA restart
