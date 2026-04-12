@@ -23,7 +23,7 @@ ssh -J s368273@helios.cs.ifmo.ru:2222 postgres2@pg199
 ### Копирование скриптов
 ```
 scp -J s368273@helios.cs.ifmo.ru:2222 *.bash postgres2@pg196:~/
-scp -J s368273@helios.cs.ifmo.ru:2222 pg2*.bash postgres2@pg199:~/
+scp -J s368273@helios.cs.ifmo.ru:2222 pg2* postgres2@pg199:~/
 
 ```
 

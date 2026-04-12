@@ -1,0 +1,11 @@
+#!/usr/local/bin/bash
+
+export PGDATA=$HOME/zfb92
+
+cat >> $PGDATA/pg_hba.conf <<EOF
+host    replication  postgres2  ::1/128       trust
+host    replication  postgres2  127.0.0.1/32  trust
+EOF
+
+pg_ctl -D $PGDATA restart
+pg_basebackup -D $HOME/base_backup -h localhost -p 9746 -U postgres2 -P -Ft -Xs -z

@@ -7,15 +7,24 @@ export NEW_OPY=/var/db/postgres2/new_opy85
 mkdir -p $PGDATA
 mkdir -p $NEW_KLS
 mkdir -p $NEW_OPY
+mkdir -p $HOME/xda54
 
-initdb -D $PGDATA --encoding=KOI8-R --locale=ru_RU.KOI8-R
+initdb -D $PGDATA --encoding=KOI8-R --locale=ru_RU.KOI8-R --waldir=$HOME/xda54
 
 mkdir -p $PGDATA/log
 
 cat > $PGDATA/pg_hba.conf << 'EOF'
-local   all             all                                     trust
-host    all             all             127.0.0.1/32            trust
-host    all             all             ::1/128                 trust
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+local   loudwhiteuser   testuser                               peer map=peermap
+local   all             all                                     peer
+host    all             all             127.0.0.1/32            ident
+host    all             all             ::1/128                 ident
+host    all             all             0.0.0.0/0               reject
+host    all             all             ::/0                    reject
+EOF
+
+cat >> $PGDATA/pg_ident.conf << 'EOF'
+peermap    postgres2    testuser
 EOF
 
 cat > $PGDATA/postgresql.conf << 'EOF'

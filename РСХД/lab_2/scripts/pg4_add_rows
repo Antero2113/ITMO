@@ -17,5 +17,3 @@ INSERT INTO sales (sale_date, amount, product_id) VALUES
 SELECT * FROM products ORDER BY id;
 SELECT * FROM sales ORDER BY id;
 EOF
-
-date "+%Y-%m-%d %H:%M:%S" > ~/pg4_time.txt

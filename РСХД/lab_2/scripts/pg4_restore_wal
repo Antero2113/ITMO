@@ -1,0 +1,20 @@
+#!/usr/local/bin/bash
+
+pg_ctl -D $HOME/zfb92 stop
+rm -rf $HOME/zfb92/* 
+tar -xvf $HOME/base_backup/base.tar.gz -C $HOME/zfb92/
+
+cat >> $HOME/zfb92/postgresql.conf <<EOF
+restore_command = 'cp $HOME/wal_archive/%f %p' 
+recovery_target_time = '$SCHEMA_TIME' 
+EOF
+
+touch $HOME/zfb92/recovery.signal 
+
+pg_ctl -D $HOME/zfb92 -l $HOME/zfb92/recovery.log start
+tail -f $HOME/zfb92/recovery.log 
+
+psql -p 9746 -U testuser -d loudwhiteuser <<EOF
+SELECT * FROM products ORDER BY id;
+SELECT * FROM sales ORDER BY id;
+EOF

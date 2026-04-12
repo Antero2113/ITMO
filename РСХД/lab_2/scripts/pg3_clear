@@ -1,0 +1,8 @@
+#!/usr/local/bin/bash
+
+pg_ctl -D $HOME/data stop
+rm -rf zfb92
+rm -rf xda54
+rm -rf new_kls10
+rm -rf new_opy85
+rm -rf restore_tmp

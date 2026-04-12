@@ -1,0 +1,166 @@
+#!/usr/local/bin/bash
+
+mkdir -p $HOME/zfb92
+initdb -D $HOME/zfb92 --waldir=$HOME/xda54 --encoding=KOI8-R --locale=ru_RU.KOI8-R
+
+export PGDATA=/var/db/postgres2/zfb92
+export PGUSER=postgres2
+export PGDATABASE=postgres
+export PGPORT=9746
+
+mkdir -p $HOME/zfb92/log
+
+cat > $PGDATA/postgresql.conf << 'EOF'
+
+port = 9746
+listen_addresses = 'localhost'
+max_connections = 7
+
+shared_buffers = 2GB
+temp_buffers = 64MB
+work_mem = 128MB
+effective_cache_size = 5GB
+
+fsync = on
+commit_delay = 100000
+checkpoint_timeout = 30min
+
+log_destination = 'stderr'
+logging_collector = on
+log_directory = 'log'
+log_filename = 'postgresql.log'
+log_min_messages = ERROR
+log_disconnections = on
+log_duration = on
+EOF
+
+cat > $PGDATA/pg_hba.conf << 'EOF'
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+local   loudwhiteuser   testuser                               peer map=peermap
+local   all             all                                     peer map=peer2map
+host    all             all             127.0.0.1/32            ident map=peer2map
+host    all             all             ::1/128                 ident map=peer2map
+host    all             all             0.0.0.0/0               reject
+host    all             all             ::/0                    reject
+EOF
+
+cat >> $PGDATA/pg_ident.conf << 'EOF'
+# Системный пользователь postgres2 может подключаться как testuser
+peermap    postgres2    testuser
+peer2map    postgres2    postgres2
+EOF
+
+mkdir -p /var/db/postgres2/kls10
+mkdir -p /var/db/postgres2/opy85
+
+pg_ctl -l $HOME/zfb92/log/postgresql.log start
+
+psql -p $PGPORT -U $PGUSER -d postgres << EOF
+CREATE TABLESPACE kls10 LOCATION '/var/db/postgres2/kls10';
+CREATE TABLESPACE opy85 LOCATION '/var/db/postgres2/opy85';
+CREATE ROLE testuser WITH LOGIN PASSWORD 'testpass';
+GRANT CONNECT ON DATABASE template1 TO testuser;
+CREATE DATABASE loudwhiteuser OWNER testuser TEMPLATE template1 ENCODING 'KOI8-R' LC_COLLATE 'ru_RU.KOI8-R' LC_CTYPE 'ru_RU.KOI8-R';
+GRANT CREATE ON TABLESPACE kls10 TO testuser;
+GRANT CREATE ON TABLESPACE opy85 TO testuser;
+EOF
+
+psql -p 9746 -U testuser -d loudwhiteuser << EOF
+DROP TABLE IF EXISTS sales CASCADE;
+CREATE TABLE sales (
+    id SERIAL,
+    sale_date DATE NOT NULL,
+    amount DECIMAL(10,2),
+    product_id INTEGER
+) PARTITION BY RANGE (sale_date);
+
+CREATE TABLE sales_2024_q1 PARTITION OF sales
+    FOR VALUES FROM ('2024-01-01') TO ('2024-04-01')
+    TABLESPACE kls10;
+
+CREATE TABLE sales_2024_q2 PARTITION OF sales
+    FOR VALUES FROM ('2024-04-01') TO ('2024-07-01')
+    TABLESPACE opy85;
+
+CREATE TABLE sales_2024_q3 PARTITION OF sales
+    FOR VALUES FROM ('2024-07-01') TO ('2024-10-01')
+    TABLESPACE kls10;
+
+CREATE TABLE sales_2024_q4 PARTITION OF sales
+    FOR VALUES FROM ('2024-10-01') TO ('2025-01-01')
+    TABLESPACE opy85;
+
+CREATE INDEX idx_sales_2024_q1_amount ON sales_2024_q1(amount) TABLESPACE kls10;
+CREATE INDEX idx_sales_2024_q2_amount ON sales_2024_q2(amount) TABLESPACE opy85;
+CREATE INDEX idx_sales_2024_q3_amount ON sales_2024_q3(amount) TABLESPACE kls10;
+CREATE INDEX idx_sales_2024_q4_amount ON sales_2024_q4(amount) TABLESPACE opy85;
+
+INSERT INTO sales (sale_date, amount, product_id) VALUES
+    ('2024-01-15', 100.50, 1),
+    ('2024-02-20', 200.75, 2),
+    ('2024-03-10', 150.25, 1),
+    ('2024-04-05', 300.00, 3),
+    ('2024-05-12', 250.50, 2),
+    ('2024-06-18', 175.80, 1),
+    ('2024-07-22', 400.20, 4),
+    ('2024-08-30', 350.00, 3),
+    ('2024-09-14', 225.90, 2),
+    ('2024-10-01', 500.00, 5),
+    ('2024-11-11', 275.60, 1),
+    ('2024-12-25', 600.00, 4);
+
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    price DECIMAL(10,2)
+) TABLESPACE kls10;
+
+CREATE INDEX idx_sales_amount ON sales(amount) TABLESPACE opy85;
+
+INSERT INTO products (name, price) VALUES
+    ('Product A', 100.00),
+    ('Product B', 200.00),
+    ('Product C', 300.00),
+    ('Product D', 400.00),
+    ('Product E', 500.00);
+
+SELECT 
+    spcname AS tablespace_name,
+    pg_tablespace_location(oid) AS location
+FROM pg_tablespace;
+
+-- Список объектов по табличным пространствам
+SELECT 
+    t.spcname AS tablespace_name,
+    c.relname AS object_name,
+    c.relkind AS object_type
+FROM pg_class c
+JOIN pg_tablespace t ON c.reltablespace = t.oid
+WHERE c.reltablespace > 0
+ORDER BY t.spcname, c.relname;
+
+-- Информация о партициях
+SELECT 
+    inhrelid::regclass AS partition_name,
+    pg_get_expr(relpartbound, inhrelid) AS partition_bound,
+    (SELECT spcname FROM pg_tablespace WHERE oid = reltablespace) AS tablespace
+FROM pg_inherits
+JOIN pg_class ON inhrelid = pg_class.oid
+WHERE inhparent = 'sales'::regclass;
+
+SELECT 
+    'kls10' AS tablespace,
+    relname AS object_name,
+    relkind AS object_type
+FROM pg_class
+WHERE reltablespace = (SELECT oid FROM pg_tablespace WHERE spcname = 'kls10')
+ORDER BY relname;
+
+SELECT 
+    'opy85' AS tablespace,
+    relname AS object_name,
+    relkind AS object_type
+FROM pg_class
+WHERE reltablespace = (SELECT oid FROM pg_tablespace WHERE spcname = 'opy85')
+ORDER BY relname;
+EOF

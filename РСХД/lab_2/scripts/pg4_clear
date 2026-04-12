@@ -1,0 +1,9 @@
+#!/usr/local/bin/bash
+
+pg_ctl -D $HOME/zfb92 stop
+rm -rf zfb92
+rm -rf xda54
+rm -rf kls10
+rm -rf opy85
+rm -rf wal_archive
+rm -rf base_backup

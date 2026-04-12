@@ -1,0 +1,13 @@
+#!/usr/local/bin/bash
+
+psql -p 9746 -U postgres2 -d postgres -c "SELECT pg_wal_replay_resume();" 
+rm $HOME/zfb92/recovery.signal 
+
+sed -i '' '/^restore_command/d' $HOME/zfb92/postgresql.conf 
+sed -i '' '/^recovery_target_time/d' $HOME/zfb92/postgresql.conf 
+
+# Проверка результатов вне режима восстановления: 
+psql -p 9746 -U postgres2 -d postgres -c "SELECT pg_is_in_recovery(), pg_last_wal_replay_lsn(), pg_last_xact_replay_timestamp();" 
+
+# Проверка восстановленных данных 
+psql -p 9746 -U testuser -d loudwhiteuser -c "SELECT count(*) FROM products;" 

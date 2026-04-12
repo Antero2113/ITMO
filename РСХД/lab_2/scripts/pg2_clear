@@ -1,0 +1,7 @@
+#!/usr/local/bin/bash
+
+pg_ctl -D $HOME/data stop
+rm -rf data
+rm -rf wal
+rm -rf ts_new1
+rm -rf ts_new2

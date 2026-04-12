@@ -1,0 +1,96 @@
+#!/usr/local/bin/bash
+
+export PGDATA=/var/db/postgres2/data
+export PGUSER=postgres2
+export PGDATABASE=postgres
+export BACKUP_DIR=~/backups
+export PGPORT=9746
+
+echo "[1/9] Остановка PostgreSQL..."
+pg_ctl -D $PGDATA stop 2>/dev/null
+
+echo "[2/9] Очистка старых данных..."
+rm -rf $PGDATA/*
+
+echo "[3/9] Создание директорий для табличных пространств..."
+mkdir -p /var/db/postgres2/ts_new1
+mkdir -p /var/db/postgres2/ts_new2
+
+echo "[4/9] Инициализация новой БД (кодировка KOI8-R)..."
+initdb -D $PGDATA --waldir=$HOME/wal --encoding=KOI8-R --locale=ru_RU.KOI8-R
+
+echo "[5/9] Настройка конфигурационных файлов..."
+cat > $PGDATA/postgresql.conf << 'EOF'
+port = 9746
+listen_addresses = 'localhost'
+max_connections = 7
+
+shared_buffers = 2GB
+temp_buffers = 64MB
+work_mem = 128MB
+effective_cache_size = 5GB
+
+fsync = on
+commit_delay = 100000
+checkpoint_timeout = 30min
+
+log_destination = 'stderr'
+logging_collector = on
+log_directory = 'log'
+log_filename = 'postgresql.log'
+log_min_messages = ERROR
+log_disconnections = on
+log_duration = on
+EOF
+
+cat > $PGDATA/pg_hba.conf << 'EOF'
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+local   loudwhiteuser   testuser                               peer map=peermap
+local   all             all                                     peer map=peer2map
+host    all             all             127.0.0.1/32            ident map=peer2map
+host    all             all             ::1/128                 ident map=peer2map
+host    all             all             0.0.0.0/0               reject
+host    all             all             ::/0                    reject
+EOF
+
+cat >> $PGDATA/pg_ident.conf << 'EOF'
+# Системный пользователь postgres2 может подключаться как testuser
+peermap    postgres2    testuser
+peer2map    postgres2    postgres2
+EOF
+
+mkdir -p $PGDATA/log
+
+echo "[6/9] Запуск PostgreSQL..."
+pg_ctl -D $PGDATA -l $PGDATA/log/postgresql.log start
+sleep 3
+
+echo "[7/9] Создание табличных пространств..."
+psql -p $PGPORT -U $PGUSER -d postgres << EOF
+CREATE TABLESPACE kls10 LOCATION '/var/db/postgres2/ts_new1';
+CREATE TABLESPACE opy85 LOCATION '/var/db/postgres2/ts_new2';
+CREATE ROLE testuser WITH LOGIN PASSWORD 'testpass';
+GRANT CONNECT ON DATABASE template1 TO testuser;
+CREATE DATABASE loudwhiteuser OWNER testuser TEMPLATE template1 ENCODING 'KOI8-R' LC_COLLATE 'ru_RU.KOI8-R' LC_CTYPE 'ru_RU.KOI8-R';
+EOF
+
+echo "[8/9] Восстановление данных из бэкапа..."
+LATEST_BACKUP=$(ls -t $BACKUP_DIR/pg_full_*.sql.gz | head -1)
+echo "      Используется бэкап: $(basename $LATEST_BACKUP)"
+
+zcat $LATEST_BACKUP |  psql -p $PGPORT -U $PGUSER -d loudwhiteuser
+UNPACKED="${LATEST_BACKUP%.gz}"
+gunzip -c "$LATEST_BACKUP" > "$UNPACKED"
+
+rm -f "$UNPACKED"
+
+echo "[9/9] Перезапуск PostgreSQL и проверка..."
+pg_ctl -D $PGDATA restart
+sleep 2
+
+psql -p $PGPORT -U $PGUSER -d postgres -c "SELECT version();"
+psql -p $PGPORT -U $PGUSER -d postgres -c "\l"
+psql -p $PGPORT -U $PGUSER -d postgres -c "\db"
+psql -p 9746 -U testuser -d loudwhiteuser -c "\dn"
+psql -p 9746 -U testuser -d loudwhiteuser -c "\dt"
+psql -p 9746 -U testuser -d loudwhiteuser -c "\d"

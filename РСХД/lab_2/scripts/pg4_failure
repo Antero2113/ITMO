@@ -1,0 +1,7 @@
+#!/usr/local/bin/bash
+
+SCHEMA_TIME=$(psql -h localhost -p 9746 -U postgres2 -d loudwhiteuser -t -c "SELECT now();") 
+echo "Цель восстановления: $SCHEMA_TIME"
+
+psql -p 9746 -U testuser -d loudwhiteuser -c "DELETE FROM products WHERE id % 2 = 1;"
+psql -p 9746 -U testuser -d loudwhiteuser -c "SELECT count(*) FROM products; SELECT count(*) FROM sales;"

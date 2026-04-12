@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 
-export PGPASSWORD="6lVL8X5a"
+export PGPASSWORD="76BIUysT"
 BACKUP_HOST="pg199"
 BACKUP_USER="postgres2"
 BACKUP_PATH="~/backups"

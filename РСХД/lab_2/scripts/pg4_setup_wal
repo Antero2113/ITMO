@@ -1,0 +1,10 @@
+#!/usr/local/bin/bash
+
+psql -p 9746 -U postgres2 -d postgres -c "ALTER SYSTEM SET wal_level = 'replica';"
+psql -p 9746 -U postgres2 -d postgres -c "ALTER SYSTEM SET archive_mode = on;"
+psql -p 9746 -U postgres2 -d postgres -c "ALTER SYSTEM SET archive_command = 'test ! -f $HOME/wal_archive/%f && cp %p $HOME/wal_archive/%f';"
+ 
+mkdir -p ~/wal_archive
+ 
+pg_ctl -D $HOME/zfb92 restart 
+psql -p 9746 -U postgres2 -d postgres -c "SHOW archive_mode; SHOW archive_command;"
