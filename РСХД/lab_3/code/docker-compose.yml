@@ -88,7 +88,7 @@ services:
       context: ./pgpool
     restart: unless-stopped
     ports:
-      - "9999:9999"
+      - "9999:5432"
       - "9898:9898"
     depends_on:
       node_a:
@@ -98,10 +98,27 @@ services:
       node_c:
         condition: service_healthy
     environment:
-      - PGPOOL_USERNAME=postgres
-      - PGPOOL_PASSWORD=postgres
-    volumes:
-      - ./pgpool/conf:/opt/bitnami/pgpool/conf
+      # Обязательные переменные для Bitnami pgpool
+      - PGPOOL_BACKEND_NODES=0:node_a:5432,1:node_b:5432,2:node_c:5432
+    
+      # Администратор pgpool
+      - PGPOOL_ADMIN_USERNAME=admin
+      - PGPOOL_ADMIN_PASSWORD=admin
+    
+      # Проверка стриминговой репликации
+      - PGPOOL_SR_CHECK_USER=postgres
+      - PGPOOL_SR_CHECK_PASSWORD=postgres
+    
+      # Проверка здоровья PostgreSQL
+      - PGPOOL_HEALTH_CHECK_USER=postgres
+      - PGPOOL_HEALTH_CHECK_PASSWORD=postgres
+    
+      # Учётные данные для бэкендов
+      - PGPOOL_POSTGRES_USERNAME=postgres
+      - PGPOOL_POSTGRES_PASSWORD=postgres
+
+      - PGPOOL_ENABLE_POOL_HBA=yes
+      - PGPOOL_PORT_NUMBER=5432
     networks:
       - pg_net
     healthcheck:
