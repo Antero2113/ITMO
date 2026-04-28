@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: ru.itmo.tpo.lab2.unit.log.LnTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.473 s -- in ru.itmo.tpo.lab2.unit.log.LnTest
