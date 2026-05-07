@@ -1,0 +1,1017 @@
+ Name               Command                   State                                              Ports                                       
+---------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ ^C
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose restart pgpool
+Restarting pgpool ... done
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose down -v --rmi all
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] down 9/9
+ ✔ Container pgpool         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_c         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_b         Removed                                                                                                                                                                                                0.3s
+ ✔ Container node_a         Removed                                                                                                                                                                                                0.3s
+ ✔ Image code-node_a:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_b:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-pgpool:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_c:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Network code_pg_net      Removed                                                                                                                                                                                                0.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose up -d
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Building 2.1s (38/38) FINISHED                                                                                                                                                                                                     
+ => [internal] load local bake definitions                                                                                                                                                                                        0.0s
+ => => reading from stdin 1.92kB                                                                                                                                                                                                  0.0s
+ => [node_b internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [node_c internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 638B                                                                                                                                                                                              0.0s
+ => [node_a internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [pgpool internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 354B                                                                                                                                                                                              0.0s
+ => [pgpool internal] load metadata for docker.io/bitnamilegacy/pgpool:latest                                                                                                                                                     0.7s
+ => [node_c internal] load metadata for docker.io/library/postgres:15                                                                                                                                                             0.7s
+ => [pgpool internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_c internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_b internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_a internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [pgpool internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 55.34kB                                                                                                                                                                                              0.0s
+ => CACHED [pgpool 1/3] FROM docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                        0.0s
+ => => resolve docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                                      0.0s
+ => [node_c 1/6] FROM docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                       0.0s
+ => => resolve docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                              0.0s
+ => [node_c internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_b internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_a internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [pgpool 2/3] COPY conf/ /opt/bitnami/pgpool/conf/                                                                                                                                                                             0.0s
+ => CACHED [node_b 2/6] RUN apt-get update && apt-get install -y     postgresql-contrib     && rm -rf /var/lib/apt/lists/*                                                                                                        0.0s
+ => CACHED [node_b 3/6] RUN mkdir -p /var/lib/postgresql/wal_archive &&     chown -R postgres:postgres /var/lib/postgresql/wal_archive                                                                                            0.0s
+ => CACHED [node_a 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_a 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_a 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => [node_a] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:5aebdfc07f39d62ea2ea2d2c7e90062c14205f6812dcec24ce2f72d00397dd63                                                                                                                                 0.0s
+ => => exporting config sha256:63f97e5ca9a61ea54a56ee45cd44b636f205ac56961133a54cb6f5e3ba938b28                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:7d18c83e3583907eae6a2bd552970e0aa6936901c371a346bae388807086619a                                                                                                                     0.1s
+ => => exporting manifest list sha256:b5d52e2bfa3865bd32d3c2a1ba9b7c2d4da055c36432807821d7f812b633bf01                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_a:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_a:latest                                                                                                                                                                          0.8s
+ => CACHED [node_c 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_c 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_c 6/6] RUN chown -R postgres:postgres /etc/postgresql                                                                                                                                                            0.0s
+ => CACHED [node_b 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_b 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_b 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => [node_c] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:628de503c695bf014ed0d8a9dc4afe97a9faa510fb020134851c8b53c28eb2b2                                                                                                                                 0.0s
+ => => exporting config sha256:faa8b3f49c6d2106c71916117b039c3c352b18eff7334c8411a6cf2c463a2c6b                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:7187da26bd53fde0043e9e6259fcad6a1eeb37471a576a864ffb9d1276818de0                                                                                                                     0.1s
+ => => exporting manifest list sha256:0ec3d6dafeb3ea11635c542d6fdbb55b58f633bfbabcaf4830ce26ca1f32178d                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_c:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_c:latest                                                                                                                                                                          0.8s
+ => [node_b] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:611f79eb3dce1b7d1a58bea46684be79b038aa718ee90721d41a1aaee651ffcb                                                                                                                                 0.0s
+ => => exporting config sha256:285b46b65ed63de545feb507d1b4b8bcd9f9e47e0bbcfac25cb1f24b826527e0                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:c145b3144a837b84ba818a1e7b71d9fb5929f2e8087798d9b3718d07e87adfc7                                                                                                                     0.1s
+ => => exporting manifest list sha256:03603311f6f30e76d7f9b1ac607d0565ae3b57589666f41312f9638f086ff730                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_b:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_b:latest                                                                                                                                                                          0.8s
+ => [pgpool 3/3] RUN chown -R 1001:1001 /opt/bitnami/pgpool/conf                                                                                                                                                                  0.4s
+ => [pgpool] exporting to image                                                                                                                                                                                                   0.3s
+ => => exporting layers                                                                                                                                                                                                           0.1s
+ => => exporting manifest sha256:86d4af089da69e88bc2f45d2767bab2d7d3a51bb1391a17cbb2e7c22589448ac                                                                                                                                 0.0s
+ => => exporting config sha256:bf542f833c930f98f9d5ec6789f20de9ddd58c7c305e3c5459a61ef3e1241b6f                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:37aa7a26cba9ff63a4c078c5094e162d3a16a480e86b9264d2ddae3ea42ce0b5                                                                                                                     0.0s
+ => => exporting manifest list sha256:b678aedac63995069e0191f172c1de6693036ef362368fe888c966ac9fd75b3c                                                                                                                            0.0s
+ => => naming to docker.io/library/code-pgpool:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-pgpool:latest                                                                                                                                                                          0.0s
+ => [pgpool] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_b] resolving provenance for metadata file                                                                                                                                                                               0.1s
+ => [node_a] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_c] resolving provenance for metadata file                                                                                                                                                                               0.0s
+[+] up 9/9
+ ✔ Image code-node_c   Built                                                                                                                                                                                                       2.2s
+ ✔ Image code-pgpool   Built                                                                                                                                                                                                       2.2s
+ ✔ Image code-node_a   Built                                                                                                                                                                                                       2.2s
+ ✔ Image code-node_b   Built                                                                                                                                                                                                       2.2s
+ ✔ Network code_pg_net Created                                                                                                                                                                                                     0.0s
+ ✔ Container node_a    Healthy                                                                                                                                                                                                    22.4s
+ ✔ Container node_b    Healthy                                                                                                                                                                                                    22.2s
+ ✔ Container node_c    Healthy                                                                                                                                                                                                    32.2s
+ ✔ Container pgpool    Started                                                                                                                                                                                                    32.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                      Ports                                            
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                                    
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                                    
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                                    
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp, 0.0.0.0:9999->9999/tcp,:::9999->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                      Ports                                            
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                                    
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                                    
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                                    
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp, 0.0.0.0:9999->9999/tcp,:::9999->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                   State                                                   Ports                                            
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                                    
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                                    
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                                    
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp, 0.0.0.0:9999->9999/tcp,:::9999->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose down -v --rmi all
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] down 9/9
+ ✔ Container pgpool         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_c         Removed                                                                                                                                                                                                0.3s
+ ✔ Container node_b         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_a         Removed                                                                                                                                                                                                0.4s
+ ✔ Image code-pgpool:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_a:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_b:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_c:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Network code_pg_net      Removed                                                                                                                                                                                                0.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose up -d
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Building 1.9s (38/38) FINISHED                                                                                                                                                                                                     
+ => [internal] load local bake definitions                                                                                                                                                                                        0.0s
+ => => reading from stdin 1.92kB                                                                                                                                                                                                  0.0s
+ => [node_b internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [node_a internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [pgpool internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 354B                                                                                                                                                                                              0.0s
+ => [node_c internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 638B                                                                                                                                                                                              0.0s
+ => [node_a internal] load metadata for docker.io/library/postgres:15                                                                                                                                                             0.5s
+ => [pgpool internal] load metadata for docker.io/bitnamilegacy/pgpool:latest                                                                                                                                                     0.5s
+ => [pgpool internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [pgpool internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 55.61kB                                                                                                                                                                                              0.0s
+ => CACHED [pgpool 1/3] FROM docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                        0.0s
+ => => resolve docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                                      0.0s
+ => [node_a internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_c internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_b internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_c 1/6] FROM docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                       0.0s
+ => => resolve docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                              0.0s
+ => [node_a internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_b internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_c internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [pgpool 2/3] COPY conf/ /opt/bitnami/pgpool/conf/                                                                                                                                                                             0.0s
+ => CACHED [node_b 2/6] RUN apt-get update && apt-get install -y     postgresql-contrib     && rm -rf /var/lib/apt/lists/*                                                                                                        0.0s
+ => CACHED [node_b 3/6] RUN mkdir -p /var/lib/postgresql/wal_archive &&     chown -R postgres:postgres /var/lib/postgresql/wal_archive                                                                                            0.0s
+ => CACHED [node_c 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_c 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_c 6/6] RUN chown -R postgres:postgres /etc/postgresql                                                                                                                                                            0.0s
+ => CACHED [node_a 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_a 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_a 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => CACHED [node_b 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_b 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_b 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => [pgpool 3/3] RUN chown -R 1001:1001 /opt/bitnami/pgpool/conf                                                                                                                                                                  0.3s
+ => [node_c] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:628de503c695bf014ed0d8a9dc4afe97a9faa510fb020134851c8b53c28eb2b2                                                                                                                                 0.0s
+ => => exporting config sha256:faa8b3f49c6d2106c71916117b039c3c352b18eff7334c8411a6cf2c463a2c6b                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:7baa506bf3fac40f49e58e9326b0789e439bfe2a87e7d40fa390d047d366c1f8                                                                                                                     0.1s
+ => => exporting manifest list sha256:7742aaeb73b500d7bc65daa68b14d44126156c9794dcc09c7bf64fca3ddba786                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_c:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_c:latest                                                                                                                                                                          0.8s
+ => [node_b] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:611f79eb3dce1b7d1a58bea46684be79b038aa718ee90721d41a1aaee651ffcb                                                                                                                                 0.0s
+ => => exporting config sha256:285b46b65ed63de545feb507d1b4b8bcd9f9e47e0bbcfac25cb1f24b826527e0                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:1a678414a9806d1035f4e78f950e1fb0602067f2c2db794089ce44ee9a7a0aa1                                                                                                                     0.1s
+ => => exporting manifest list sha256:819d2d8f7766621e05ff76355ea8b96746af2990e760c1998255623ec47f09e6                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_b:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_b:latest                                                                                                                                                                          0.8s
+ => [node_a] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:5aebdfc07f39d62ea2ea2d2c7e90062c14205f6812dcec24ce2f72d00397dd63                                                                                                                                 0.0s
+ => => exporting config sha256:63f97e5ca9a61ea54a56ee45cd44b636f205ac56961133a54cb6f5e3ba938b28                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:75ac4a2486324daa016399b31859e0d6d898cb47e4f513c6f5346655cfb54ccc                                                                                                                     0.1s
+ => => exporting manifest list sha256:713ed9350c19eee4acc8ad9fe3e3825cb363cced9dd42a6e53ad2479cc5992ba                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_a:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_a:latest                                                                                                                                                                          0.8s
+ => [pgpool] exporting to image                                                                                                                                                                                                   0.3s
+ => => exporting layers                                                                                                                                                                                                           0.1s
+ => => exporting manifest sha256:af2cf7d1d9e81f1f9453f43692e4d189c666af8ab1cdb800e5c819ddf94467d9                                                                                                                                 0.0s
+ => => exporting config sha256:c5c8f2ec5216c148f88716a7d4f2c842b3bf4989e482b39b9d7092ecc683e616                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:037f3f600ca7a7c5c6e3c71fb15053f87c2b155cb1dcba7ff30dbda052e16d0a                                                                                                                     0.0s
+ => => exporting manifest list sha256:9573170c308c065d0b24e9d2875f9b2acc63125cfd337f4de1b4ebadc5fa3381                                                                                                                            0.0s
+ => => naming to docker.io/library/code-pgpool:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-pgpool:latest                                                                                                                                                                          0.0s
+ => [pgpool] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_b] resolving provenance for metadata file                                                                                                                                                                               0.1s
+ => [node_c] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_a] resolving provenance for metadata file                                                                                                                                                                               0.0s
+[+] up 9/9
+ ✔ Image code-pgpool   Built                                                                                                                                                                                                       2.0s
+ ✔ Image code-node_a   Built                                                                                                                                                                                                       2.0s
+ ✔ Image code-node_b   Built                                                                                                                                                                                                       2.0s
+ ✔ Image code-node_c   Built                                                                                                                                                                                                       2.0s
+ ✔ Network code_pg_net Created                                                                                                                                                                                                     0.0s
+ ✔ Container node_a    Healthy                                                                                                                                                                                                    22.4s
+ ✔ Container node_b    Healthy                                                                                                                                                                                                    22.3s
+ ✔ Container node_c    Healthy                                                                                                                                                                                                    32.2s
+ ✔ Container pgpool    Started                                                                                                                                                                                                    32.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                   State                                              Ports                                       
+---------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql: error: connection to server at "localhost" (127.0.0.1), port 9999 failed: FATAL:  client authentication failed
+DETAIL:  missing or erroneous pool_hba.conf file
+HINT:  see pgpool log for details
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ sudo chown -R 1001:1001 ./pgpool/conf
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql: error: connection to server at "localhost" (127.0.0.1), port 9999 failed: FATAL:  client authentication failed
+DETAIL:  missing or erroneous pool_hba.conf file
+HINT:  see pgpool log for details
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose restart pgpool
+Restarting pgpool ... done
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql: error: connection to server at "localhost" (127.0.0.1), port 9999 failed: FATAL:  client authentication failed
+DETAIL:  missing or erroneous pool_hba.conf file
+HINT:  see pgpool log for details
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose down -v --rmi all
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] down 9/9
+ ✔ Container pgpool         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_c         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_b         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_a         Removed                                                                                                                                                                                                0.3s
+ ✔ Image code-pgpool:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_a:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_b:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_c:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Network code_pg_net      Removed                                                                                                                                                                                                0.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ sudo chown -R antero:antero ./pgpool/conf
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose up -d
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Building 2.4s (39/39) FINISHED                                                                                                                                                                                                     
+ => [internal] load local bake definitions                                                                                                                                                                                        0.0s
+ => => reading from stdin 1.92kB                                                                                                                                                                                                  0.0s
+ => [pgpool internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 581B                                                                                                                                                                                              0.0s
+ => [node_c internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 638B                                                                                                                                                                                              0.0s
+ => [node_b internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [node_a internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [pgpool internal] load metadata for docker.io/bitnamilegacy/pgpool:latest                                                                                                                                                     0.8s
+ => [node_c internal] load metadata for docker.io/library/postgres:15                                                                                                                                                             0.8s
+ => [pgpool internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => CACHED [pgpool 1/4] FROM docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                        0.0s
+ => => resolve docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                                      0.0s
+ => [pgpool internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 1.23kB                                                                                                                                                                                               0.0s
+ => [node_a internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_b internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_c internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_a 1/6] FROM docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                       0.0s
+ => => resolve docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                              0.0s
+ => [node_a internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_b internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_c internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [pgpool 2/4] COPY conf/pgpool.conf /opt/bitnami/pgpool/conf/pgpool.conf                                                                                                                                                       0.0s
+ => CACHED [node_b 2/6] RUN apt-get update && apt-get install -y     postgresql-contrib     && rm -rf /var/lib/apt/lists/*                                                                                                        0.0s
+ => CACHED [node_b 3/6] RUN mkdir -p /var/lib/postgresql/wal_archive &&     chown -R postgres:postgres /var/lib/postgresql/wal_archive                                                                                            0.0s
+ => CACHED [node_c 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_c 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_c 6/6] RUN chown -R postgres:postgres /etc/postgresql                                                                                                                                                            0.0s
+ => [pgpool 3/4] COPY conf/pool_hba.conf /opt/bitnami/pgpool/conf/pool_hba.conf                                                                                                                                                   0.1s
+ => [node_c] exporting to image                                                                                                                                                                                                   1.1s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:628de503c695bf014ed0d8a9dc4afe97a9faa510fb020134851c8b53c28eb2b2                                                                                                                                 0.0s
+ => => exporting config sha256:faa8b3f49c6d2106c71916117b039c3c352b18eff7334c8411a6cf2c463a2c6b                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:ff3927b0b40233a24c8416317893b155a4e70752e7b815c3c636bc60304dd1b6                                                                                                                     0.1s
+ => => exporting manifest list sha256:d4759ea2d749211d1729011e79920bbfab0106b8e5dde784130934f15db92357                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_c:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_c:latest                                                                                                                                                                          0.9s
+ => CACHED [node_a 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_a 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_a 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => CACHED [node_b 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_b 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_b 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => [node_a] exporting to image                                                                                                                                                                                                   1.1s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:5aebdfc07f39d62ea2ea2d2c7e90062c14205f6812dcec24ce2f72d00397dd63                                                                                                                                 0.0s
+ => => exporting config sha256:63f97e5ca9a61ea54a56ee45cd44b636f205ac56961133a54cb6f5e3ba938b28                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:5ba4d9e862b6950119e2aa67c500663258a272cffb3253b02ba4fe39b97f5a8f                                                                                                                     0.1s
+ => => exporting manifest list sha256:a014c55ea31902c26a6a4376d5f263011b3e8173849e1690b295f776b242ae72                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_a:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_a:latest                                                                                                                                                                          0.9s
+ => [node_b] exporting to image                                                                                                                                                                                                   1.1s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:611f79eb3dce1b7d1a58bea46684be79b038aa718ee90721d41a1aaee651ffcb                                                                                                                                 0.0s
+ => => exporting config sha256:285b46b65ed63de545feb507d1b4b8bcd9f9e47e0bbcfac25cb1f24b826527e0                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:bbd45eac4b7f7e6c22bf52a49774f85b18c0bc9986568a5f0e3ccf9244380a0c                                                                                                                     0.1s
+ => => exporting manifest list sha256:2fc6dadaed45b684f57af58af69dffb6e664256e1d2baf5b95a69d3e04ca52cc                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_b:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_b:latest                                                                                                                                                                          0.9s
+ => [pgpool 4/4] RUN chown 1001:1001 /opt/bitnami/pgpool/conf/pgpool.conf &&     chown 1001:1001 /opt/bitnami/pgpool/conf/pool_hba.conf &&     chmod 644 /opt/bitnami/pgpool/conf/pgpool.conf &&     chmod 644 /opt/bitnami/pgpo  0.5s
+ => [pgpool] exporting to image                                                                                                                                                                                                   0.4s
+ => => exporting layers                                                                                                                                                                                                           0.1s
+ => => exporting manifest sha256:3844c5cac7ec2a6e303b9a24174196989b420df62724db2b2a35ea90eb57523e                                                                                                                                 0.0s
+ => => exporting config sha256:a5a9975f7c2280125baf430d8121c3d193573e27bb1ac0c18b64e3a6de108005                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:c0264eac1ea602d2ec381c867bf11d0e4ad5974a721e9e7e71e7d5c626d61256                                                                                                                     0.0s
+ => => exporting manifest list sha256:b9a3428d9ee74ac382c9ea2e566bd7891e87b954188876f37426973a7fe08df7                                                                                                                            0.0s
+ => => naming to docker.io/library/code-pgpool:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-pgpool:latest                                                                                                                                                                          0.1s
+ => [pgpool] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_c] resolving provenance for metadata file                                                                                                                                                                               0.1s
+ => [node_a] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_b] resolving provenance for metadata file                                                                                                                                                                               0.0s
+[+] up 9/9
+ ✔ Image code-node_c   Built                                                                                                                                                                                                       2.5s
+ ✔ Image code-pgpool   Built                                                                                                                                                                                                       2.5s
+ ✔ Image code-node_a   Built                                                                                                                                                                                                       2.5s
+ ✔ Image code-node_b   Built                                                                                                                                                                                                       2.5s
+ ✔ Network code_pg_net Created                                                                                                                                                                                                     0.0s
+ ✔ Container node_a    Healthy                                                                                                                                                                                                    22.4s
+ ✔ Container node_b    Healthy                                                                                                                                                                                                    22.3s
+ ✔ Container node_c    Healthy                                                                                                                                                                                                    32.2s
+ ✔ Container pgpool    Started                                                                                                                                                                                                    32.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker logs pgpool --tail 50
+pgpool 20:21:40.45 INFO  ==> ** Starting Pgpool-II setup **
+pgpool 20:21:40.47 INFO  ==> Validating settings in PGPOOL_* env vars...
+pgpool 20:21:40.48 INFO  ==> Initializing Pgpool-II...
+pgpool 20:21:40.48 INFO  ==> Generating pg_hba.conf file...
+pgpool 20:21:40.49 INFO  ==> Generating pgpool.conf file...
+pgpool 20:21:40.58 INFO  ==> Generating password file for local authentication...
+pgpool 20:21:40.59 INFO  ==> Generating password file for pgpool admin user...
+
+pgpool 20:21:40.60 INFO  ==> ** Pgpool-II setup finished! **
+pgpool 20:21:40.61 INFO  ==> ** Starting Pgpool-II **
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_a/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 6 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_b/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 7 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_c/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 8 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.630: main pid 1: LOG:  Backend status file /opt/bitnami/pgpool/logs/pgpool_status does not exist
+2026-04-26 20:21:40.630: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.630: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:21:40.630: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:21:40.630: main pid 1: LOG:  allocating (144190784) bytes of shared memory segment
+2026-04-26 20:21:40.630: main pid 1: LOG:  allocating shared memory segment of size: 144190784 
+2026-04-26 20:21:40.719: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.719: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.719: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:21:40.719: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:21:40.720: main pid 1: LOG:  pool_discard_oid_maps: discarded memqcache oid maps
+2026-04-26 20:21:40.729: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.5432
+2026-04-26 20:21:40.729: main pid 1: LOG:  listen address[0]: *
+2026-04-26 20:21:40.729: main pid 1: LOG:  Setting up socket for 0.0.0.0:5432
+2026-04-26 20:21:40.729: main pid 1: LOG:  Setting up socket for :::5432
+2026-04-26 20:21:40.736: main pid 1: LOG:  find_primary_node_repeatedly: waiting for finding a primary node
+2026-04-26 20:21:40.782: main pid 1: LOG:  find_primary_node: primary node is 0
+2026-04-26 20:21:40.782: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.9898
+2026-04-26 20:21:40.782: main pid 1: LOG:  listen address[0]: localhost
+2026-04-26 20:21:40.783: main pid 1: LOG:  Setting up socket for ::1:9898
+2026-04-26 20:21:40.783: main pid 1: LOG:  Setting up socket for 127.0.0.1:9898
+2026-04-26 20:21:40.783: pcp_main pid 187: LOG:  PCP process: 187 started
+2026-04-26 20:21:40.783: sr_check_worker pid 188: LOG:  process started
+2026-04-26 20:21:40.784: health_check pid 189: LOG:  process started
+2026-04-26 20:21:40.784: health_check pid 190: LOG:  process started
+2026-04-26 20:21:40.785: health_check pid 191: LOG:  process started
+2026-04-26 20:21:40.791: main pid 1: LOG:  pgpool-II successfully started. version 4.6.2 (chirikoboshi)
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[0]: 1
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[1]: 0
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[2]: 0
+2026-04-26 20:21:40.829: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:21:40.829: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:22:11.519: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:22:11.519: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                   State                                              Ports                                       
+---------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker logs pgpool --tail 50
+pgpool 20:21:40.49 INFO  ==> Generating pgpool.conf file...
+pgpool 20:21:40.58 INFO  ==> Generating password file for local authentication...
+pgpool 20:21:40.59 INFO  ==> Generating password file for pgpool admin user...
+
+pgpool 20:21:40.60 INFO  ==> ** Pgpool-II setup finished! **
+pgpool 20:21:40.61 INFO  ==> ** Starting Pgpool-II **
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_a/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 6 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_b/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 7 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_c/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 8 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.630: main pid 1: LOG:  Backend status file /opt/bitnami/pgpool/logs/pgpool_status does not exist
+2026-04-26 20:21:40.630: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.630: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:21:40.630: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:21:40.630: main pid 1: LOG:  allocating (144190784) bytes of shared memory segment
+2026-04-26 20:21:40.630: main pid 1: LOG:  allocating shared memory segment of size: 144190784 
+2026-04-26 20:21:40.719: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.719: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.719: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:21:40.719: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:21:40.720: main pid 1: LOG:  pool_discard_oid_maps: discarded memqcache oid maps
+2026-04-26 20:21:40.729: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.5432
+2026-04-26 20:21:40.729: main pid 1: LOG:  listen address[0]: *
+2026-04-26 20:21:40.729: main pid 1: LOG:  Setting up socket for 0.0.0.0:5432
+2026-04-26 20:21:40.729: main pid 1: LOG:  Setting up socket for :::5432
+2026-04-26 20:21:40.736: main pid 1: LOG:  find_primary_node_repeatedly: waiting for finding a primary node
+2026-04-26 20:21:40.782: main pid 1: LOG:  find_primary_node: primary node is 0
+2026-04-26 20:21:40.782: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.9898
+2026-04-26 20:21:40.782: main pid 1: LOG:  listen address[0]: localhost
+2026-04-26 20:21:40.783: main pid 1: LOG:  Setting up socket for ::1:9898
+2026-04-26 20:21:40.783: main pid 1: LOG:  Setting up socket for 127.0.0.1:9898
+2026-04-26 20:21:40.783: pcp_main pid 187: LOG:  PCP process: 187 started
+2026-04-26 20:21:40.783: sr_check_worker pid 188: LOG:  process started
+2026-04-26 20:21:40.784: health_check pid 189: LOG:  process started
+2026-04-26 20:21:40.784: health_check pid 190: LOG:  process started
+2026-04-26 20:21:40.785: health_check pid 191: LOG:  process started
+2026-04-26 20:21:40.791: main pid 1: LOG:  pgpool-II successfully started. version 4.6.2 (chirikoboshi)
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[0]: 1
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[1]: 0
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[2]: 0
+2026-04-26 20:21:40.829: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:21:40.829: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:22:11.519: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:22:11.519: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:22:42.200: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:22:42.200: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:23:12.893: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:23:12.893: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql: error: connection to server at "localhost" (127.0.0.1), port 9999 failed: FATAL:  client authentication failed
+DETAIL:  missing or erroneous pool_hba.conf file
+HINT:  see pgpool log for details
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker logs pgpool --tail 50
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 7 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.627: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_c/32"
+2026-04-26 20:21:40.627: main pid 1: CONTEXT:  line 8 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:21:40.630: main pid 1: LOG:  Backend status file /opt/bitnami/pgpool/logs/pgpool_status does not exist
+2026-04-26 20:21:40.630: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.630: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:21:40.630: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:21:40.630: main pid 1: LOG:  allocating (144190784) bytes of shared memory segment
+2026-04-26 20:21:40.630: main pid 1: LOG:  allocating shared memory segment of size: 144190784 
+2026-04-26 20:21:40.719: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.719: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:21:40.719: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:21:40.719: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:21:40.720: main pid 1: LOG:  pool_discard_oid_maps: discarded memqcache oid maps
+2026-04-26 20:21:40.729: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.5432
+2026-04-26 20:21:40.729: main pid 1: LOG:  listen address[0]: *
+2026-04-26 20:21:40.729: main pid 1: LOG:  Setting up socket for 0.0.0.0:5432
+2026-04-26 20:21:40.729: main pid 1: LOG:  Setting up socket for :::5432
+2026-04-26 20:21:40.736: main pid 1: LOG:  find_primary_node_repeatedly: waiting for finding a primary node
+2026-04-26 20:21:40.782: main pid 1: LOG:  find_primary_node: primary node is 0
+2026-04-26 20:21:40.782: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.9898
+2026-04-26 20:21:40.782: main pid 1: LOG:  listen address[0]: localhost
+2026-04-26 20:21:40.783: main pid 1: LOG:  Setting up socket for ::1:9898
+2026-04-26 20:21:40.783: main pid 1: LOG:  Setting up socket for 127.0.0.1:9898
+2026-04-26 20:21:40.783: pcp_main pid 187: LOG:  PCP process: 187 started
+2026-04-26 20:21:40.783: sr_check_worker pid 188: LOG:  process started
+2026-04-26 20:21:40.784: health_check pid 189: LOG:  process started
+2026-04-26 20:21:40.784: health_check pid 190: LOG:  process started
+2026-04-26 20:21:40.785: health_check pid 191: LOG:  process started
+2026-04-26 20:21:40.791: main pid 1: LOG:  pgpool-II successfully started. version 4.6.2 (chirikoboshi)
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[0]: 1
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[1]: 0
+2026-04-26 20:21:40.791: main pid 1: LOG:  node status[2]: 0
+2026-04-26 20:21:40.829: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:21:40.829: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:22:11.519: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:22:11.519: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:22:42.200: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:22:42.200: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:23:12.893: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:23:12.893: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:23:43.578: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:23:43.578: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:24:13.616: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:24:13.616: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:24:41.589: child pid 184: FATAL:  client authentication failed
+2026-04-26 20:24:41.589: child pid 184: DETAIL:  missing or erroneous pool_hba.conf file
+2026-04-26 20:24:41.589: child pid 184: HINT:  see pgpool log for details
+2026-04-26 20:24:44.307: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:24:44.307: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ # Создайте правильный файл прямо в контейнере
+docker exec pgpool bash -c "cat > /opt/bitnami/pgpool/conf/pool_hba.conf << 'EOF'
+# TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
+local   all         all                               trust
+host    all         all         127.0.0.1/32          trust
+host    all         all         0.0.0.0/0             trust
+EOF"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose restart pgpool
+Restarting pgpool ... done
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ sleep 10
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql (16.13 (Ubuntu 16.13-0ubuntu0.24.04.1), server 15.17 (Debian 15.17-1.pgdg13+1))
+Type "help" for help.
+
+postgres=# \q
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql (16.13 (Ubuntu 16.13-0ubuntu0.24.04.1), server 15.17 (Debian 15.17-1.pgdg13+1))
+Type "help" for help.
+
+postgres=# \q
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                   State                                              Ports                                       
+---------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose down -v --rmi all
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] down 9/9
+ ✔ Container pgpool         Removed                                                                                                                                                                                                0.4s
+ ✔ Container node_c         Removed                                                                                                                                                                                                0.3s
+ ✔ Container node_b         Removed                                                                                                                                                                                                0.3s
+ ✔ Container node_a         Removed                                                                                                                                                                                                0.3s
+ ✔ Image code-pgpool:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_a:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_b:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Image code-node_c:latest Removed                                                                                                                                                                                                0.2s
+ ✔ Network code_pg_net      Removed                                                                                                                                                                                                0.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker compose up -d
+WARN[0000] /home/antero/study/ITMO/РСХД/lab_3/code/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Building 2.2s (39/39) FINISHED                                                                                                                                                                                                     
+ => [internal] load local bake definitions                                                                                                                                                                                        0.0s
+ => => reading from stdin 1.92kB                                                                                                                                                                                                  0.0s
+ => [node_a internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [pgpool internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 581B                                                                                                                                                                                              0.0s
+ => [node_c internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 638B                                                                                                                                                                                              0.0s
+ => [node_b internal] load build definition from Dockerfile                                                                                                                                                                       0.0s
+ => => transferring dockerfile: 689B                                                                                                                                                                                              0.0s
+ => [node_a internal] load metadata for docker.io/library/postgres:15                                                                                                                                                             0.8s
+ => [pgpool internal] load metadata for docker.io/bitnamilegacy/pgpool:latest                                                                                                                                                     0.7s
+ => [pgpool internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_a internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_b internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [node_c internal] load .dockerignore                                                                                                                                                                                          0.0s
+ => => transferring context: 2B                                                                                                                                                                                                   0.0s
+ => [pgpool 1/4] FROM docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                               0.0s
+ => => resolve docker.io/bitnamilegacy/pgpool:latest@sha256:e8593680067657a6bdd3829d1871d552bc0d5f447975b94a3f0d03584ac0ae88                                                                                                      0.0s
+ => [pgpool internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 100B                                                                                                                                                                                                 0.0s
+ => [node_c 1/6] FROM docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                       0.0s
+ => => resolve docker.io/library/postgres:15@sha256:29342cb52157b098821961d2c14eec3c019071f56a5d559e990cf07cf541ea9b                                                                                                              0.0s
+ => [node_b internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_c internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => [node_a internal] load build context                                                                                                                                                                                          0.0s
+ => => transferring context: 167B                                                                                                                                                                                                 0.0s
+ => CACHED [pgpool 2/4] COPY conf/pgpool.conf /opt/bitnami/pgpool/conf/pgpool.conf                                                                                                                                                0.0s
+ => CACHED [pgpool 3/4] COPY conf/pool_hba.conf /opt/bitnami/pgpool/conf/pool_hba.conf                                                                                                                                            0.0s
+ => CACHED [pgpool 4/4] RUN chown 1001:1001 /opt/bitnami/pgpool/conf/pgpool.conf &&     chown 1001:1001 /opt/bitnami/pgpool/conf/pool_hba.conf &&     chmod 644 /opt/bitnami/pgpool/conf/pgpool.conf &&     chmod 644 /opt/bitna  0.0s
+ => [pgpool] exporting to image                                                                                                                                                                                                   0.3s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:3844c5cac7ec2a6e303b9a24174196989b420df62724db2b2a35ea90eb57523e                                                                                                                                 0.0s
+ => => exporting config sha256:a5a9975f7c2280125baf430d8121c3d193573e27bb1ac0c18b64e3a6de108005                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:92fb781c774e42b35cf5a4dbd70eb51e9fd884fa07cc0da08d752833014fe834                                                                                                                     0.0s
+ => => exporting manifest list sha256:b876a44f9ade7e03aa6ad988be677477d8ed02dbbeba50a336778ac5a7cb7510                                                                                                                            0.0s
+ => => naming to docker.io/library/code-pgpool:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-pgpool:latest                                                                                                                                                                          0.2s
+ => CACHED [node_c 2/6] RUN apt-get update && apt-get install -y     postgresql-contrib     && rm -rf /var/lib/apt/lists/*                                                                                                        0.0s
+ => CACHED [node_c 3/6] RUN mkdir -p /var/lib/postgresql/wal_archive &&     chown -R postgres:postgres /var/lib/postgresql/wal_archive                                                                                            0.0s
+ => CACHED [node_a 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_a 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_a 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => CACHED [node_b 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_b 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_b 6/6] RUN chown -R postgres:postgres /etc/postgresql &&     chmod +x /docker-entrypoint-initdb.d/*.sh                                                                                                           0.0s
+ => CACHED [node_c 4/6] COPY scripts/ /docker-entrypoint-initdb.d/                                                                                                                                                                0.0s
+ => CACHED [node_c 5/6] COPY conf/ /etc/postgresql/                                                                                                                                                                               0.0s
+ => CACHED [node_c 6/6] RUN chown -R postgres:postgres /etc/postgresql                                                                                                                                                            0.0s
+ => [node_a] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:5aebdfc07f39d62ea2ea2d2c7e90062c14205f6812dcec24ce2f72d00397dd63                                                                                                                                 0.0s
+ => => exporting config sha256:63f97e5ca9a61ea54a56ee45cd44b636f205ac56961133a54cb6f5e3ba938b28                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:b08349c03d6020475be3b7947a57128a72474998cab363b2cb5de0657cc38a1b                                                                                                                     0.1s
+ => => exporting manifest list sha256:5020d624139049037da7551c1db9730c1e32eaad6a5f03aacf74415643570d9e                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_a:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_a:latest                                                                                                                                                                          0.7s
+ => [node_b] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:611f79eb3dce1b7d1a58bea46684be79b038aa718ee90721d41a1aaee651ffcb                                                                                                                                 0.0s
+ => => exporting config sha256:285b46b65ed63de545feb507d1b4b8bcd9f9e47e0bbcfac25cb1f24b826527e0                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:e66cc49f836bbfddb84f40770249fe4bf6005c2a5edee6873886338179fe1558                                                                                                                     0.1s
+ => => exporting manifest list sha256:1b34cdc95f1ef7459e730f7faca2223d465161de008f20102017ec58eb75c246                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_b:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_b:latest                                                                                                                                                                          0.7s
+ => [node_c] exporting to image                                                                                                                                                                                                   1.0s
+ => => exporting layers                                                                                                                                                                                                           0.0s
+ => => exporting manifest sha256:628de503c695bf014ed0d8a9dc4afe97a9faa510fb020134851c8b53c28eb2b2                                                                                                                                 0.0s
+ => => exporting config sha256:faa8b3f49c6d2106c71916117b039c3c352b18eff7334c8411a6cf2c463a2c6b                                                                                                                                   0.0s
+ => => exporting attestation manifest sha256:27023f9198d3b7a255a3bba9b3b56a993b7d6aa1d866c36b3c4cb39bbe03a5e2                                                                                                                     0.1s
+ => => exporting manifest list sha256:7c1cce37e34355b9f40c42c23f863c3c0c6971b266f832d96fc74519a917ee79                                                                                                                            0.0s
+ => => naming to docker.io/library/code-node_c:latest                                                                                                                                                                             0.0s
+ => => unpacking to docker.io/library/code-node_c:latest                                                                                                                                                                          0.7s
+ => [pgpool] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_a] resolving provenance for metadata file                                                                                                                                                                               0.1s
+ => [node_c] resolving provenance for metadata file                                                                                                                                                                               0.0s
+ => [node_b] resolving provenance for metadata file                                                                                                                                                                               0.0s
+[+] up 9/9
+ ✔ Image code-node_a   Built                                                                                                                                                                                                       2.3s
+ ✔ Image code-node_b   Built                                                                                                                                                                                                       2.3s
+ ✔ Image code-node_c   Built                                                                                                                                                                                                       2.3s
+ ✔ Image code-pgpool   Built                                                                                                                                                                                                       2.3s
+ ✔ Network code_pg_net Created                                                                                                                                                                                                     0.0s
+ ✔ Container node_a    Healthy                                                                                                                                                                                                    22.4s
+ ✔ Container node_b    Healthy                                                                                                                                                                                                    22.2s
+ ✔ Container node_c    Healthy                                                                                                                                                                                                    32.1s
+ ✔ Container pgpool    Started                                                                                                                                                                                                    32.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                   State                                              Ports                                       
+---------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker logs pgpool --tail 50
+pgpool 20:28:53.74 INFO  ==> Generating password file for pgpool admin user...
+pgpool 20:28:53.75 INFO  ==> ** Pgpool-II setup finished! **
+
+pgpool 20:28:53.76 INFO  ==> ** Starting Pgpool-II **
+2026-04-26 20:28:53.776: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_a/32"
+2026-04-26 20:28:53.776: main pid 1: CONTEXT:  line 6 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:28:53.776: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_b/32"
+2026-04-26 20:28:53.776: main pid 1: CONTEXT:  line 7 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:28:53.776: main pid 1: LOG:  specifying both host name and CIDR mask is invalid: "node_c/32"
+2026-04-26 20:28:53.776: main pid 1: CONTEXT:  line 8 of configuration file "/opt/bitnami/pgpool/conf/pool_hba.conf"
+2026-04-26 20:28:53.778: main pid 1: LOG:  Backend status file /opt/bitnami/pgpool/logs/pgpool_status does not exist
+2026-04-26 20:28:53.778: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:28:53.779: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:28:53.779: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:28:53.779: main pid 1: LOG:  allocating (144190784) bytes of shared memory segment
+2026-04-26 20:28:53.779: main pid 1: LOG:  allocating shared memory segment of size: 144190784 
+2026-04-26 20:28:53.872: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:28:53.872: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:28:53.872: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:28:53.872: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:28:53.874: main pid 1: LOG:  pool_discard_oid_maps: discarded memqcache oid maps
+2026-04-26 20:28:53.882: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.5432
+2026-04-26 20:28:53.882: main pid 1: LOG:  listen address[0]: *
+2026-04-26 20:28:53.882: main pid 1: LOG:  Setting up socket for 0.0.0.0:5432
+2026-04-26 20:28:53.882: main pid 1: LOG:  Setting up socket for :::5432
+2026-04-26 20:28:53.888: main pid 1: LOG:  find_primary_node_repeatedly: waiting for finding a primary node
+2026-04-26 20:28:53.935: main pid 1: LOG:  find_primary_node: primary node is 0
+2026-04-26 20:28:53.935: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.9898
+2026-04-26 20:28:53.935: main pid 1: LOG:  listen address[0]: localhost
+2026-04-26 20:28:53.935: main pid 1: LOG:  Setting up socket for ::1:9898
+2026-04-26 20:28:53.936: main pid 1: LOG:  Setting up socket for 127.0.0.1:9898
+2026-04-26 20:28:53.936: pcp_main pid 187: LOG:  PCP process: 187 started
+2026-04-26 20:28:53.936: sr_check_worker pid 188: LOG:  process started
+2026-04-26 20:28:53.937: health_check pid 189: LOG:  process started
+2026-04-26 20:28:53.937: health_check pid 190: LOG:  process started
+2026-04-26 20:28:53.937: health_check pid 191: LOG:  process started
+2026-04-26 20:28:53.941: main pid 1: LOG:  pgpool-II successfully started. version 4.6.2 (chirikoboshi)
+2026-04-26 20:28:53.941: main pid 1: LOG:  node status[0]: 1
+2026-04-26 20:28:53.941: main pid 1: LOG:  node status[1]: 0
+2026-04-26 20:28:53.941: main pid 1: LOG:  node status[2]: 0
+2026-04-26 20:28:53.978: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:28:53.978: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:29:24.026: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:29:24.026: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:29:54.061: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:29:54.061: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:30:24.497: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:30:24.497: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:30:54.978: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:30:54.978: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker exec pgpool bash -c "cat > /opt/bitnami/pgpool/conf/pool_hba.conf << 'EOF'
+# TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
+local   all         all                               trust
+host    all         all         127.0.0.1/32          trust
+host    all         all         0.0.0.0/0             trust
+EOF
+> 
+> "
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose restart pgpool
+Restarting pgpool ... done
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                       State                                                 Ports                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)            0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (health: starting)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker-compose ps
+ Name               Command                   State                                              Ports                                       
+---------------------------------------------------------------------------------------------------------------------------------------------
+node_a   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5432->5432/tcp,:::5432->5432/tcp                                          
+node_b   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5435->5432/tcp,:::5435->5432/tcp                                          
+node_c   docker-entrypoint.sh postgres    Up (healthy)     0.0.0.0:5436->5432/tcp,:::5436->5432/tcp                                          
+pgpool   /opt/bitnami/scripts/pgpoo ...   Up (unhealthy)   0.0.0.0:9999->5432/tcp,:::9999->5432/tcp, 0.0.0.0:9898->9898/tcp,:::9898->9898/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ docker logs pgpool --tail 50
+pgpool 20:31:55.30 INFO  ==> Did you know there are enterprise versions of the Bitnami catalog? For enhanced secure software supply chain features, unlimited pulls from Docker, LTS support, or application customization, see Bitnami Premium or Tanzu Application Catalog. See https://www.arrow.com/globalecs/na/vendors/bitnami/ for more information.
+pgpool 20:31:55.30 INFO  ==> 
+pgpool 20:31:55.32 INFO  ==> ** Starting Pgpool-II setup **
+pgpool 20:31:55.33 INFO  ==> Validating settings in PGPOOL_* env vars...
+pgpool 20:31:55.35 INFO  ==> Initializing Pgpool-II...
+pgpool 20:31:55.35 INFO  ==> Generating pg_hba.conf file...
+pgpool 20:31:55.35 INFO  ==> Generating pgpool.conf file...
+pgpool 20:31:55.46 INFO  ==> Generating password file for local authentication...
+pgpool 20:31:55.47 INFO  ==> Generating password file for pgpool admin user...
+
+pgpool 20:31:55.48 INFO  ==> ** Pgpool-II setup finished! **
+pgpool 20:31:55.49 INFO  ==> ** Starting Pgpool-II **
+2026-04-26 20:31:55.519: main pid 1: LOG:  Backend status file /opt/bitnami/pgpool/logs/pgpool_status discarded
+2026-04-26 20:31:55.519: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:31:55.519: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:31:55.519: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:31:55.519: main pid 1: LOG:  allocating (144190784) bytes of shared memory segment
+2026-04-26 20:31:55.519: main pid 1: LOG:  allocating shared memory segment of size: 144190784 
+2026-04-26 20:31:55.600: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:31:55.600: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2026-04-26 20:31:55.600: main pid 1: LOG:  memory cache initialized
+2026-04-26 20:31:55.600: main pid 1: DETAIL:  memcache blocks :64
+2026-04-26 20:31:55.601: main pid 1: LOG:  pool_discard_oid_maps: discarded memqcache oid maps
+2026-04-26 20:31:55.609: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.5432
+2026-04-26 20:31:55.610: main pid 1: LOG:  listen address[0]: *
+2026-04-26 20:31:55.610: main pid 1: LOG:  Setting up socket for 0.0.0.0:5432
+2026-04-26 20:31:55.610: main pid 1: LOG:  Setting up socket for :::5432
+2026-04-26 20:31:55.616: main pid 1: LOG:  find_primary_node_repeatedly: waiting for finding a primary node
+2026-04-26 20:31:55.649: main pid 1: LOG:  find_primary_node: primary node is 0
+2026-04-26 20:31:55.649: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.9898
+2026-04-26 20:31:55.649: main pid 1: LOG:  listen address[0]: localhost
+2026-04-26 20:31:55.649: main pid 1: LOG:  Setting up socket for ::1:9898
+2026-04-26 20:31:55.649: main pid 1: LOG:  Setting up socket for 127.0.0.1:9898
+2026-04-26 20:31:55.650: pcp_main pid 187: LOG:  PCP process: 187 started
+2026-04-26 20:31:55.651: sr_check_worker pid 188: LOG:  process started
+2026-04-26 20:31:55.651: health_check pid 189: LOG:  process started
+2026-04-26 20:31:55.651: health_check pid 190: LOG:  process started
+2026-04-26 20:31:55.651: health_check pid 191: LOG:  process started
+2026-04-26 20:31:55.659: main pid 1: LOG:  pgpool-II successfully started. version 4.6.2 (chirikoboshi)
+2026-04-26 20:31:55.659: main pid 1: LOG:  node status[0]: 1
+2026-04-26 20:31:55.659: main pid 1: LOG:  node status[1]: 0
+2026-04-26 20:31:55.659: main pid 1: LOG:  node status[2]: 0
+2026-04-26 20:31:55.682: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:31:55.682: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:32:26.218: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:32:26.218: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:32:56.772: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:32:56.772: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+2026-04-26 20:33:27.314: sr_check_worker pid 188: LOG:  get_query_result failed: status: -2
+2026-04-26 20:33:27.314: sr_check_worker pid 188: CONTEXT:  while checking replication time lag
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql (16.13 (Ubuntu 16.13-0ubuntu0.24.04.1), server 15.17 (Debian 15.17-1.pgdg13+1))
+Type "help" for help.
+
+postgres=# \q
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql (16.13 (Ubuntu 16.13-0ubuntu0.24.04.1), server 15.17 (Debian 15.17-1.pgdg13+1))
+Type "help" for help.
+
+postgres=# SHOW pool_nodes;
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | node_a   | 5432 | up     | up        | 0.333333  | primary | primary | 0          | false             | 0                 |                   |                        | 2026-04-26 20:34:05
+ 1       | node_b   | 5432 | up     | up        | 0.333333  | standby | primary | 0          | false             | 26439512          |                   |                        | 2026-04-26 20:34:05
+ 2       | node_c   | 5432 | up     | up        | 0.333333  | standby | primary | 0          | true              | 26439512          |                   |                        | 2026-04-26 20:34:05
+(3 rows)
+
+postgres=# INSERT INTO test_table (data) 
+    SELECT 'Тестовые данные ' || generate_series(1, 100);
+    
+    SELECT COUNT(*) as total_rows FROM test_table;
+ERROR:  relation "test_table" does not exist
+LINE 1: INSERT INTO test_table (data) 
+                    ^
+ERROR:  relation "test_table" does not exist
+LINE 1: SELECT COUNT(*) as total_rows FROM test_table;
+                                           ^
+postgres=# \db
+       List of tablespaces
+    Name    |  Owner   | Location 
+------------+----------+----------
+ pg_default | postgres | 
+ pg_global  | postgres | 
+(2 rows)
+
+postgres=# \q
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ chmod +x ./node_a/scripts/01-init-db.sh
+chmod: cannot access './node_a/scripts/01-init-db.sh': No such file or directory
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ chmod +x ./node_a/scripts/01-init.sh
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ ./node_a/scripts/01-init.sh
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+        Is the server running locally and accepting connections on that socket?
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql (16.13 (Ubuntu 16.13-0ubuntu0.24.04.1), server 15.17 (Debian 15.17-1.pgdg13+1))
+Type "help" for help.
+
+postgres=# CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator_pass';
+ERROR:  role "replicator" already exists
+postgres=# CREATE DATABASE testdb;
+    \c testdb
+    CREATE TABLE test_table (
+        id SERIAL PRIMARY KEY,
+        data TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+ERROR:  database "testdb" already exists
+invalid integer value "test_table" for connection option "port"
+Previous connection kept
+postgres=# CREATE TABLE test_table (
+        id SERIAL PRIMARY KEY,
+        data TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+CREATE TABLE
+postgres=# \q
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ psql -h localhost -p 9999 -U postgres -d postgres
+psql (16.13 (Ubuntu 16.13-0ubuntu0.24.04.1), server 15.17 (Debian 15.17-1.pgdg13+1))
+Type "help" for help.
+
+postgres=# \db
+       List of tablespaces
+    Name    |  Owner   | Location 
+------------+----------+----------
+ pg_default | postgres | 
+ pg_global  | postgres | 
+(2 rows)
+
+postgres=# \d
+                List of relations
+ Schema |       Name        |   Type   |  Owner   
+--------+-------------------+----------+----------
+ public | test_table        | table    | postgres
+ public | test_table_id_seq | sequence | postgres
+(2 rows)
+
+postgres=# SHOW pool_nodes;
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | node_a   | 5432 | up     | up        | 0.333333  | primary | primary | 3          | true              | 0                 |                   |                        | 2026-04-26 20:34:05
+ 1       | node_b   | 5432 | up     | up        | 0.333333  | standby | primary | 0          | false             | 26589616          |                   |                        | 2026-04-26 20:34:05
+ 2       | node_c   | 5432 | up     | up        | 0.333333  | standby | primary | 1          | false             | 26589616          |                   |                        | 2026-04-26 20:34:05
+(3 rows)
+
+postgres=# ^C
+postgres=# ./scripts/check_replication.sh
+postgres-# \q
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/code$ ./scripts/check_replication.sh
+Starting replication check...
+
+=== Replication Status ===
+Checking replication status on 172.18.0.2...
+ client_addr | state | sync_state | sent_lsn | write_lsn | flush_lsn | replay_lsn 
+-------------+-------+------------+----------+-----------+-----------+------------
+(0 rows)
+
+Checking replication status on 172.18.0.3...
+ client_addr | state | sync_state | sent_lsn | write_lsn | flush_lsn | replay_lsn 
+-------------+-------+------------+----------+-----------+-----------+------------
+(0 rows)
+
+Checking replication status on 172.18.0.4...
+ client_addr | state | sync_state | sent_lsn | write_lsn | flush_lsn | replay_lsn 
+-------------+-------+------------+----------+-----------+-----------+------------
+(0 rows)
+
+
+=== Replication Delay ===
+Checking replication delay between 172.18.0.2 and 172.18.0.3...
+ERROR:  invalid input syntax for type pg_lsn: ""
+LINE 2:         SELECT pg_wal_lsn_diff('0/150BA60', '');
+                                                    ^
+Replication delay:  bytes
+Checking replication delay between 172.18.0.3 and 172.18.0.4...
+ERROR:  invalid input syntax for type pg_lsn: ""
+LINE 2:         SELECT pg_wal_lsn_diff('0/150BA60', '');
+                                                    ^
+Replication delay:  bytes
+
+=== Testing Replication ===
+Testing replication on 172.18.0.2...
+INSERT 0 1
+Checking data on node_a...
+ id |                   data                    |         created_at         
+----+-------------------------------------------+----------------------------
+  2 | Test data at Sun Apr 26 23:45:38 MSK 2026 | 2026-04-26 20:45:39.006784
+(1 row)
+
+Checking data on node_b...
+ id |                   data                    |         created_at         
+----+-------------------------------------------+----------------------------
+  2 | Test data at Sun Apr 26 23:45:38 MSK 2026 | 2026-04-26 20:45:39.006784
+(1 row)
+
+Checking data on node_c...
+ id |                   data                    |         created_at         
+----+-------------------------------------------+----------------------------
+  2 | Test data at Sun Apr 26 23:45:38 MSK 2026 | 2026-04-26 20:45:39.006784
+(1 row)
+
+
+Replication check completed.
