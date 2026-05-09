@@ -9,10 +9,8 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./primary/init:/docker-entrypoint-initdb.d:ro
+      - pg_a_data:/var/lib/postgresql/data
       - ./primary/conf:/etc/postgresql/custom:ro
-    tmpfs:
-      - /var/lib/postgresql/data:size=1g
     ports:
       - "9437:5432"
     healthcheck:

@@ -44,4 +44,6 @@ docker exec -it lab3_client bash /tmp/8_final_cluster_check.sh
 ```
 docker logs lab3_pg_a --tail 100
 docker exec -u postgres lab3_pg_a psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_b psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_c psql -c "select pg_is_in_recovery();"
 ```

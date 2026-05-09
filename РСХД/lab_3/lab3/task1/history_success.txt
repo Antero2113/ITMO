@@ -1,0 +1,986 @@
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres -e PGPASSWORD=replicator lab3_pg_a bash -lc " "
+pg_basebackup -h lab3_pg_b -U replicator -D /var/lib/postgresql/data -P -R
+"
+waiting for checkpoint
+30881/30881 kB (100%), 0/1 tablespace
+30881/30881 kB (100%), 1/1 tablespace
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+        Is the server running locally and accepting connections on that socket?
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker ps -a | grep pg_a
+6fce546f1c8f   task1-pg_a     "/usr/local/bin/post…"   8 minutes ago    Up 2 minutes (unhealthy)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp             lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker logs lab3_pg_a --tail 50
+2026-05-08 23:06:51.753 GMT [397] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-08 23:06:51.753 GMT [397] LOG:  connection authorized: user=postgres database=postgres
+2026-05-08 23:06:51.770 GMT [397] LOG:  disconnection: session time: 0:00:00.021 user=postgres database=postgres host=172.18.0.10 port=41106
+2026-05-08 23:06:52.620 GMT [405] LOG:  connection received: host=127.0.0.1 port=56046
+2026-05-08 23:06:56.385 GMT [406] LOG:  connection received: host=172.18.0.10 port=41116
+2026-05-08 23:06:56.390 GMT [406] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-08 23:06:56.390 GMT [406] LOG:  connection authorized: user=postgres database=postgres
+2026-05-08 23:06:56.391 GMT [406] LOG:  disconnection: session time: 0:00:00.005 user=postgres database=postgres host=172.18.0.10 port=41116
+2026-05-08 23:06:56.772 GMT [407] LOG:  connection received: host=172.18.0.10 port=41132
+2026-05-08 23:06:56.776 GMT [407] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-08 23:06:56.776 GMT [407] LOG:  connection authorized: user=postgres database=postgres
+2026-05-08 23:06:56.792 GMT [407] LOG:  disconnection: session time: 0:00:00.020 user=postgres database=postgres host=172.18.0.10 port=41132
+2026-05-08 23:06:57.695 GMT [415] LOG:  connection received: host=127.0.0.1 port=32916
+2026-05-08 23:07:01.392 GMT [416] LOG:  connection received: host=172.18.0.10 port=41810
+2026-05-08 23:07:01.397 GMT [416] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-08 23:07:01.397 GMT [416] LOG:  connection authorized: user=postgres database=postgres
+2026-05-08 23:07:01.397 GMT [416] LOG:  disconnection: session time: 0:00:00.005 user=postgres database=postgres host=172.18.0.10 port=41810
+2026-05-08 23:07:01.793 GMT [417] LOG:  connection received: host=172.18.0.10 port=41822
+2026-05-08 23:07:01.798 GMT [417] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-08 23:07:01.798 GMT [417] LOG:  connection authorized: user=postgres database=postgres
+2026-05-08 23:07:01.814 GMT [417] LOG:  disconnection: session time: 0:00:00.020 user=postgres database=postgres host=172.18.0.10 port=41822
+2026-05-08 23:07:02.776 GMT [425] LOG:  connection received: host=127.0.0.1 port=32944
+2026-05-08 23:07:03.178 GMT [7] LOG:  received smart shutdown request
+2026-05-08 23:07:06.400 GMT [427] LOG:  connection received: host=172.18.0.10 port=41828
+2026-05-08 23:07:06.401 GMT [427] FATAL:  the database system is shutting down
+2026-05-08 23:07:06.409 GMT [179] LOG:  disconnection: session time: 0:02:03.111 user=postgres database=appdb host=172.18.0.10 port=52314
+2026-05-08 23:07:06.415 GMT [7] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-05-08 23:07:06.416 GMT [28] LOG:  shutting down
+2026-05-08 23:07:06.430 GMT [28] LOG:  checkpoint starting: shutdown immediate
+2026-05-08 23:07:06.449 GMT [45] LOG:  disconnection: session time: 0:03:15.133 user=replicator database= host=172.18.0.5 port=40428
+2026-05-08 23:07:06.503 GMT [28] LOG:  checkpoint complete: wrote 60 buffers (0.2%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.010 s, sync=0.019 s, total=0.078 s; sync files=22, longest=0.009 s, average=0.001 s; distance=16750 kB, estimate=16750 kB; lsn=0/305BAF0, redo lsn=0/305BAF0
+2026-05-08 23:07:06.508 GMT [7] LOG:  database system is shut down
+
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+2026-05-08 23:09:41.779 GMT [7] LOG:  starting PostgreSQL 16.13 (Debian 16.13-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-08 23:09:41.780 GMT [7] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-08 23:09:41.780 GMT [7] LOG:  listening on IPv6 address "::", port 5432
+2026-05-08 23:09:41.789 GMT [7] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-08 23:09:41.799 GMT [30] LOG:  database system was shut down at 2026-05-08 23:07:06 GMT
+2026-05-08 23:09:41.816 GMT [7] LOG:  database system is ready to accept connections
+2026-05-08 23:09:46.807 GMT [41] LOG:  connection received: host=127.0.0.1 port=52068
+2026-05-08 23:09:51.893 GMT [49] LOG:  connection received: host=127.0.0.1 port=53672
+2026-05-08 23:09:56.886 GMT [31] PANIC:  could not create file "pg_wal/xlogtemp.31": No such file or directory
+2026-05-08 23:09:56.979 GMT [65] LOG:  connection received: host=127.0.0.1 port=53704
+2026-05-08 23:09:56.979 GMT [65] FATAL:  could not open file "global/pg_filenode.map": No such file or directory
+2026-05-08 23:09:58.302 GMT [7] LOG:  WAL writer process (PID 31) was terminated by signal 6: Aborted
+2026-05-08 23:09:58.302 GMT [7] LOG:  terminating any other active server processes
+2026-05-08 23:09:58.303 GMT [7] LOG:  shutting down because restart_after_crash is off
+2026-05-08 23:09:58.320 GMT [7] LOG:  database system is shut down
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker volume rm task1_pg_a_data
+Error response from daemon: remove task1_pg_a_data: volume is in use - [6fce546f1c8fa8928b6312c9c0dd001e87992825e2cfcabdba7269944373bb25]
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker rm lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker volume rm task1_pg_a_data
+task1_pg_a_data
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose up -d pg_a
+[+] up 2/2
+ ✔ Volume task1_pg_a_data Created                                                                                                                                                                                                  0.0s
+ ✔ Container lab3_pg_a    Started                                                                                                                                                                                                  0.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose ps
+NAME          IMAGE          COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+lab3_client   postgres:16    "docker-entrypoint.s…"   client    8 minutes ago   Up 8 minutes             5432/tcp
+lab3_pg_a     task1-pg_a     "/usr/local/bin/post…"   pg_a      8 seconds ago   Up 7 seconds (healthy)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp
+lab3_pg_b     task1-pg_b     "/usr/local/bin/stan…"   pg_b      9 minutes ago   Up 9 minutes (healthy)   0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp
+lab3_pg_c     task1-pg_c     "/usr/local/bin/stan…"   pg_c      9 minutes ago   Up 9 minutes (healthy)   0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp
+lab3_pgpool   task1-pgpool   "docker-entrypoint.s…"   pgpool    9 minutes ago   Up 8 minutes (healthy)   5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres -e PGPASSWORD=replicator lab3_pg_a bash -lc "
+pg_basebackup -h lab3_pg_b -U replicator -D /var/lib/postgresql/data -P -R
+"
+pg_basebackup: error: directory "/var/lib/postgresql/data" exists but is not empty
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_a bash -lc "rm -rf /var/lib/postgresql/data/*"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres -e PGPASSWORD=replicator lab3_pg_a bash -lc "
+pg_basebackup -h lab3_pg_b -U replicator -D /var/lib/postgresql/data -P -R
+"
+waiting for checkpoint
+30881/30881 kB (100%), 0/1 tablespace
+30881/30881 kB (100%), 1/1 tablespace
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose ps
+NAME          IMAGE          COMMAND                  SERVICE   CREATED              STATUS                             PORTS
+lab3_client   postgres:16    "docker-entrypoint.s…"   client    9 minutes ago        Up 9 minutes                       5432/tcp
+lab3_pg_a     task1-pg_a     "/usr/local/bin/post…"   pg_a      About a minute ago   Up 11 seconds (health: starting)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp
+lab3_pg_b     task1-pg_b     "/usr/local/bin/stan…"   pg_b      10 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp
+lab3_pg_c     task1-pg_c     "/usr/local/bin/stan…"   pg_c      10 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp
+lab3_pgpool   task1-pgpool   "docker-entrypoint.s…"   pgpool    9 minutes ago        Up 9 minutes (healthy)             5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose ps
+NAME          IMAGE          COMMAND                  SERVICE   CREATED              STATUS                             PORTS
+lab3_client   postgres:16    "docker-entrypoint.s…"   client    9 minutes ago        Up 9 minutes                       5432/tcp
+lab3_pg_a     task1-pg_a     "/usr/local/bin/post…"   pg_a      About a minute ago   Up 18 seconds (health: starting)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp
+lab3_pg_b     task1-pg_b     "/usr/local/bin/stan…"   pg_b      10 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp
+lab3_pg_c     task1-pg_c     "/usr/local/bin/stan…"   pg_c      10 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp
+lab3_pgpool   task1-pgpool   "docker-entrypoint.s…"   pgpool    10 minutes ago       Up 9 minutes (healthy)             5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose ps
+NAME          IMAGE          COMMAND                  SERVICE   CREATED              STATUS                             PORTS
+lab3_client   postgres:16    "docker-entrypoint.s…"   client    10 minutes ago       Up 10 minutes                      5432/tcp
+lab3_pg_a     task1-pg_a     "/usr/local/bin/post…"   pg_a      About a minute ago   Up 25 seconds (health: starting)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp
+lab3_pg_b     task1-pg_b     "/usr/local/bin/stan…"   pg_b      10 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp
+lab3_pg_c     task1-pg_c     "/usr/local/bin/stan…"   pg_c      10 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp
+lab3_pgpool   task1-pgpool   "docker-entrypoint.s…"   pgpool    10 minutes ago       Up 10 minutes (healthy)            5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose ps
+NAME          IMAGE          COMMAND                  SERVICE   CREATED              STATUS                             PORTS
+lab3_client   postgres:16    "docker-entrypoint.s…"   client    10 minutes ago       Up 10 minutes                      5432/tcp
+lab3_pg_a     task1-pg_a     "/usr/local/bin/post…"   pg_a      About a minute ago   Up 40 seconds (health: starting)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp
+lab3_pg_b     task1-pg_b     "/usr/local/bin/stan…"   pg_b      11 minutes ago       Up 11 minutes (healthy)            0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp
+lab3_pg_c     task1-pg_c     "/usr/local/bin/stan…"   pg_c      11 minutes ago       Up 10 minutes (healthy)            0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp
+lab3_pgpool   task1-pgpool   "docker-entrypoint.s…"   pgpool    10 minutes ago       Up 10 minutes (healthy)            5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker logs lab3_pg_a --tail 50
+2026-05-08 23:14:16.115 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:21.120 GMT [40] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:21.120 GMT [40] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:21.120 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:21.122 GMT [41] LOG:  connection received: host=127.0.0.1 port=52192
+2026-05-08 23:14:21.122 GMT [41] FATAL:  the database system is starting up
+2026-05-08 23:14:22.803 GMT [48] LOG:  connection received: host=[local]
+2026-05-08 23:14:22.803 GMT [48] FATAL:  the database system is starting up
+2026-05-08 23:14:26.131 GMT [49] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:26.131 GMT [49] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:26.131 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:26.200 GMT [57] LOG:  connection received: host=127.0.0.1 port=52226
+2026-05-08 23:14:26.200 GMT [57] FATAL:  the database system is starting up
+2026-05-08 23:14:31.127 GMT [58] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:31.127 GMT [58] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:31.127 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:31.272 GMT [67] LOG:  connection received: host=127.0.0.1 port=49382
+2026-05-08 23:14:31.272 GMT [67] FATAL:  the database system is starting up
+2026-05-08 23:14:36.132 GMT [68] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:36.132 GMT [68] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:36.132 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:36.350 GMT [76] LOG:  connection received: host=127.0.0.1 port=49414
+2026-05-08 23:14:36.350 GMT [76] FATAL:  the database system is starting up
+2026-05-08 23:14:41.147 GMT [77] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:41.147 GMT [77] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:41.147 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:41.446 GMT [85] LOG:  connection received: host=127.0.0.1 port=44034
+2026-05-08 23:14:41.446 GMT [85] FATAL:  the database system is starting up
+2026-05-08 23:14:46.156 GMT [86] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:46.156 GMT [86] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:46.156 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:46.521 GMT [94] LOG:  connection received: host=127.0.0.1 port=44054
+2026-05-08 23:14:46.521 GMT [94] FATAL:  the database system is starting up
+2026-05-08 23:14:47.157 GMT [101] LOG:  connection received: host=[local]
+2026-05-08 23:14:47.157 GMT [101] FATAL:  the database system is starting up
+2026-05-08 23:14:51.147 GMT [102] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:51.147 GMT [102] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:51.147 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:51.626 GMT [110] LOG:  connection received: host=127.0.0.1 port=39738
+2026-05-08 23:14:51.627 GMT [110] FATAL:  the database system is starting up
+2026-05-08 23:14:56.152 GMT [111] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:14:56.152 GMT [111] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:14:56.152 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:14:56.711 GMT [119] LOG:  connection received: host=127.0.0.1 port=39784
+2026-05-08 23:14:56.711 GMT [119] FATAL:  the database system is starting up
+2026-05-08 23:15:01.155 GMT [120] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:15:01.155 GMT [120] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663057410789415.
+2026-05-08 23:15:01.155 GMT [30] LOG:  waiting for WAL to become available at 0/6000078
+2026-05-08 23:15:01.799 GMT [128] LOG:  connection received: host=127.0.0.1 port=48794
+2026-05-08 23:15:01.799 GMT [128] FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker volume rm task1_pg_a_data
+Error response from daemon: remove task1_pg_a_data: volume is in use - [2b462a57256eb0091d104a3441670b2487bb68ba104d8ce6e868b5c1f4ccfe06]
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker rm lab3_pg_a
+docker volume rm task1_pg_a_data
+lab3_pg_a
+task1_pg_a_data
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose up -d pg_a
+[+] up 2/2
+ ✔ Volume task1_pg_a_data Created                                                                                                                                                                                                  0.0s
+ ✔ Container lab3_pg_a    Started                                                                                                                                                                                                  0.3s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker volume rm task1_pg_a_data
+Error response from daemon: remove task1_pg_a_data: volume is in use - [cacbac82e6b8ca1ec929558be3a122aace9ef8098834ba6ef48a2c94095c7240]
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_a bash -lc "rm -rf /var/lib/postgresql/data/*"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres -e PGPASSWORD=replicator lab3_pg_a bash -lc "
+pg_basebackup -h lab3_pg_b -U replicator -D /var/lib/postgresql/data -P -R
+"
+waiting for checkpoint
+30881/30881 kB (100%), 0/1 tablespace
+30881/30881 kB (100%), 1/1 tablespace
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker logs lab3_pg_a --tail 50
+2026-05-08 23:17:01.426 UTC [7] LOG:  received smart shutdown request
+2026-05-08 23:17:01.426 UTC [7] LOG:  could not open file "postmaster.pid": No such file or directory
+2026-05-08 23:17:01.429 UTC [7] LOG:  background worker "logical replication launcher" (PID 66) exited with exit code 1
+2026-05-08 23:17:01.431 UTC [61] LOG:  shutting down
+2026-05-08 23:17:01.436 UTC [61] LOG:  checkpoint starting: shutdown immediate
+2026-05-08 23:17:01.489 UTC [61] LOG:  checkpoint complete: wrote 42 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.009 s, total=0.058 s; sync files=11, longest=0.005 s, average=0.001 s; distance=238 kB, estimate=238 kB; lsn=0/152E678, redo lsn=0/152E678
+2026-05-08 23:17:01.493 UTC [7] LOG:  database system is shut down
+
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+2026-05-08 23:17:02.066 GMT [7] LOG:  starting PostgreSQL 16.13 (Debian 16.13-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-08 23:17:02.066 GMT [7] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-08 23:17:02.067 GMT [7] LOG:  listening on IPv6 address "::", port 5432
+2026-05-08 23:17:02.079 GMT [7] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-08 23:17:02.090 GMT [30] LOG:  database system was shut down at 2026-05-08 23:17:01 GMT
+2026-05-08 23:17:02.091 GMT [30] LOG:  entering standby mode
+2026-05-08 23:17:02.091 GMT [30] LOG:  starting backup recovery with redo LSN 0/8000028, checkpoint LSN 0/8000060, on timeline ID 2
+2026-05-08 23:17:02.091 GMT [30] LOG:  WAL file is from different database system: WAL file database system identifier is 7637660547245142056, pg_control database system identifier is 7637663780708171815
+2026-05-08 23:17:02.097 GMT [31] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:02.097 GMT [31] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:02.104 GMT [32] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:02.104 GMT [32] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:02.104 GMT [30] LOG:  waiting for WAL to become available at 0/8000078
+2026-05-08 23:17:07.108 GMT [40] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:07.108 GMT [40] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:07.108 GMT [30] LOG:  waiting for WAL to become available at 0/8000078
+2026-05-08 23:17:07.121 GMT [41] LOG:  connection received: host=127.0.0.1 port=47932
+2026-05-08 23:17:07.121 GMT [41] FATAL:  the database system is starting up
+2026-05-08 23:17:08.012 GMT [48] LOG:  connection received: host=[local]
+2026-05-08 23:17:08.012 GMT [48] FATAL:  the database system is starting up
+2026-05-08 23:17:12.112 GMT [49] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:12.112 GMT [49] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:12.112 GMT [30] LOG:  waiting for WAL to become available at 0/8000078
+2026-05-08 23:17:12.189 GMT [57] LOG:  connection received: host=127.0.0.1 port=40070
+2026-05-08 23:17:12.189 GMT [57] FATAL:  the database system is starting up
+2026-05-08 23:17:17.116 GMT [58] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:17.116 GMT [58] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:17.117 GMT [30] LOG:  waiting for WAL to become available at 0/8000078
+2026-05-08 23:17:17.269 GMT [66] LOG:  connection received: host=127.0.0.1 port=40096
+2026-05-08 23:17:17.269 GMT [66] FATAL:  the database system is starting up
+2026-05-08 23:17:22.145 GMT [67] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:22.145 GMT [67] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:22.145 GMT [30] LOG:  waiting for WAL to become available at 0/8000078
+2026-05-08 23:17:22.348 GMT [75] LOG:  connection received: host=127.0.0.1 port=55626
+2026-05-08 23:17:22.348 GMT [75] FATAL:  the database system is starting up
+2026-05-08 23:17:27.149 GMT [76] FATAL:  database system identifier differs between the primary and standby
+2026-05-08 23:17:27.149 GMT [76] DETAIL:  The primary's identifier is 7637660547245142056, the standby's identifier is 7637663780708171815.
+2026-05-08 23:17:27.149 GMT [30] LOG:  waiting for WAL to become available at 0/8000078
+2026-05-08 23:17:27.436 GMT [84] LOG:  connection received: host=127.0.0.1 port=51966
+2026-05-08 23:17:27.436 GMT [84] FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+docker rm lab3_pg_a
+docker volume rm task1_pg_a_data
+docker compose up -d pg_a
+lab3_pg_a
+lab3_pg_a
+task1_pg_a_data
+[+] up 2/2
+ ✔ Volume task1_pg_a_data Created                                                                                                                                                                                                  0.0s
+ ✔ Container lab3_pg_a    Started                                                                                                                                                                                                  0.4s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose ps
+NAME          IMAGE          COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+lab3_client   postgres:16    "docker-entrypoint.s…"   client    15 minutes ago   Up 15 minutes             5432/tcp
+lab3_pg_a     task1-pg_a     "/usr/local/bin/post…"   pg_a      17 seconds ago   Up 16 seconds (healthy)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp
+lab3_pg_b     task1-pg_b     "/usr/local/bin/stan…"   pg_b      16 minutes ago   Up 16 minutes (healthy)   0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp
+lab3_pg_c     task1-pg_c     "/usr/local/bin/stan…"   pg_c      16 minutes ago   Up 16 minutes (healthy)   0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp
+lab3_pgpool   task1-pgpool   "docker-entrypoint.s…"   pgpool    15 minutes ago   Up 15 minutes (healthy)   5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ cd step3_scripts/
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1/step3_scripts$ ./8_final_cluster_check.sh 
+== NODE ROLES ==
+--- pg_a ---
+primary
+--- pg_b ---
+primary
+--- pg_c ---
+standby
+
+== Replication state on pg_b ==
+-[ RECORD 1 ]----+-----------
+application_name | pg_c
+client_addr      | 172.18.0.6
+state            | streaming
+sync_state       | async
+
+
+== Replication slots on pg_b ==
+ slot_name | active 
+-----------+--------
+ slot_c    | t
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1/step3_scripts$ cd ..
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker compose down -v
+[+] down 9/9
+ ✔ Container lab3_client  Removed                                                                                                                                                                                                 10.3s
+ ✔ Container lab3_pgpool  Removed                                                                                                                                                                                                  0.4s
+ ✔ Container lab3_pg_c    Removed                                                                                                                                                                                                 10.4s
+ ✔ Container lab3_pg_b    Removed                                                                                                                                                                                                 10.4s
+ ✔ Container lab3_pg_a    Removed                                                                                                                                                                                                  0.4s
+ ✔ Volume task1_pg_c_data Removed                                                                                                                                                                                                  0.1s
+ ✔ Volume task1_pg_b_data Removed                                                                                                                                                                                                  0.0s
+ ✔ Volume task1_pg_a_data Removed                                                                                                                                                                                                  0.1s
+ ! Network task1_pgnet    Resource is still in use                                                                                                                                                                                 0.0s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ ./start.sh
+STEP 1 - start pg_a
+[+] up 2/2
+ ✔ Volume task1_pg_a_data Created                                                                                                                                                                                                  0.0s
+ ✔ Container lab3_pg_a    Started                                                                                                                                                                                                  0.4s
+WAIT pg_a
+/var/run/postgresql:5432 - no response
+/var/run/postgresql:5432 - accepting connections
+BOOTSTRAP ROLE
+DO
+CREATE DB
+CREATE DATABASE
+INIT SCHEMA
+CREATE TABLE
+CREATE TABLE
+CREATE SLOTS
+ pg_create_physical_replication_slot 
+-------------------------------------
+ (slot_b,)
+(1 row)
+
+ pg_create_physical_replication_slot 
+-------------------------------------
+ (slot_c,)
+(1 row)
+
+COPY CONFIGS INTO PG_A DATA DIR
+RESTART PRIMARY
+lab3_pg_a
+START REPLICAS
+[+] up 5/5
+ ✔ Volume task1_pg_c_data Created                                                                                                                                                                                                  0.0s
+ ✔ Volume task1_pg_b_data Created                                                                                                                                                                                                  0.0s
+ ✔ Container lab3_pg_a    Healthy                                                                                                                                                                                                  1.4s
+ ✔ Container lab3_pg_b    Healthy                                                                                                                                                                                                  6.4s
+ ✔ Container lab3_pg_c    Started                                                                                                                                                                                                  6.6s
+[+] up 5/5
+ ✔ Container lab3_pg_a   Healthy                                                                                                                                                                                                   1.8s
+ ✔ Container lab3_pg_b   Healthy                                                                                                                                                                                                   1.8s
+ ✔ Container lab3_pg_c   Healthy                                                                                                                                                                                                   5.3s
+ ✔ Container lab3_pgpool Healthy                                                                                                                                                                                                  11.0s
+ ✔ Container lab3_client Started                                                                                                                                                                                                  11.1s
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 user=replicator password=replicator'
+"
+Error response from daemon: container a46738f3ecfc9790776cbbc285a9339c8b43bee77d6ad77327cf4524f265db2a is not running
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "pg_isready"
+/var/run/postgresql:5432 - accepting connections
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+ pg_is_in_recovery 
+-------------------
+ f
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_a bash -lc "pg_ctl stop -D /var/lib/postgresql/data -m immediate"
+bash: line 1: pg_ctl: command not found
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "pg_ctl -D /var/lib/postgresql/data stop -m immediate"
+bash: line 1: pg_ctl: command not found
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_a bash -lc "kill -TERM 1"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a pg_isready
+Error response from daemon: container a46738f3ecfc9790776cbbc285a9339c8b43bee77d6ad77327cf4524f265db2a is not running
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker logs lab3_pg_a --tail 20
+2026-05-08 23:27:37.054 GMT [371] LOG:  connection received: host=127.0.0.1 port=56304
+2026-05-08 23:27:42.131 GMT [379] LOG:  connection received: host=127.0.0.1 port=48636
+2026-05-08 23:27:47.210 GMT [396] LOG:  connection received: host=127.0.0.1 port=48654
+2026-05-08 23:27:52.289 GMT [404] LOG:  connection received: host=127.0.0.1 port=59224
+2026-05-08 23:27:55.143 GMT [7] LOG:  received smart shutdown request
+2026-05-08 23:27:55.149 GMT [7] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2026-05-08 23:27:55.149 GMT [28] LOG:  shutting down
+2026-05-08 23:27:55.154 GMT [28] LOG:  checkpoint starting: shutdown immediate
+2026-05-08 23:27:55.191 GMT [28] LOG:  checkpoint complete: wrote 32 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.009 s, total=0.043 s; sync files=8, longest=0.006 s, average=0.002 s; distance=219 kB, estimate=219 kB; lsn=0/3080CB8, redo lsn=0/3080CB8
+2026-05-08 23:27:55.195 GMT [7] LOG:  database system is shut down
+
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+2026-05-08 23:28:42.866 GMT [7] LOG:  starting PostgreSQL 16.13 (Debian 16.13-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-08 23:28:42.867 GMT [7] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-08 23:28:42.867 GMT [7] LOG:  listening on IPv6 address "::", port 5432
+2026-05-08 23:28:42.875 GMT [7] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-08 23:28:42.886 GMT [30] LOG:  database system was shut down at 2026-05-08 23:27:55 GMT
+2026-05-08 23:28:42.901 GMT [7] LOG:  database system is ready to accept connections
+2026-05-08 23:28:47.877 GMT [41] LOG:  connection received: host=127.0.0.1 port=52772
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 user=replicator password=replicator'
+"
+bash: line 2: pg_rewind: command not found
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "which pg_rewind"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "find / -name pg_rewind 2>/dev/null"
+/usr/lib/postgresql/16/bin/pg_rewind
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a                
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_a                
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+/usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 user=replicator password=replicator'
+"
+pg_rewind: error: connection to server at "pg_b" (172.18.0.4), port 5432 failed: FATAL:  database "replicator" does not exist
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+/usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 user=replicator password=replicator'
+"
+pg_rewind: error: connection to server at "pg_b" (172.18.0.4), port 5432 failed: FATAL:  database "replicator" does not exist
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+/usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 dbname=postgres user=replicator password=replicator'
+"
+pg_rewind: executing "/usr/lib/postgresql/16/bin/postgres" for target server to complete crash recovery
+2026-05-08 23:31:39.286 GMT [46] FATAL:  lock file "postmaster.pid" already exists
+2026-05-08 23:31:39.286 GMT [46] HINT:  Is another postmaster (PID 7) running in data directory "/var/lib/postgresql/data"?
+pg_rewind: error: postgres single-user mode in target cluster failed
+pg_rewind: detail: Command was: /usr/lib/postgresql/16/bin/postgres --single -F -D /var/lib/postgresql/data template1 < /dev/null
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_a bash -lc "rm -f /var/lib/postgresql/data/postmaster.pid"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+/usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 dbname=postgres user=replicator password=replicator'
+"
+pg_rewind: executing "/usr/lib/postgresql/16/bin/postgres" for target server to complete crash recovery
+2026-05-08 23:32:40.756 GMT [166] LOG:  database system was interrupted; last known up at 2026-05-08 23:31:38 GMT
+2026-05-08 23:32:40.756 GMT [166] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-05-08 23:32:40.756 GMT [166] LOG:  redo starts at 0/3080F40
+2026-05-08 23:32:40.756 GMT [166] LOG:  invalid record length at 0/3080F78: expected at least 24, got 0
+2026-05-08 23:32:40.756 GMT [166] LOG:  redo done at 0/3080F40 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-05-08 23:32:40.757 GMT [166] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-05-08 23:32:40.757 GMT [166] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/3080F78, redo lsn=0/3080F78
+2026-05-08 23:32:40.760 GMT [166] LOG:  checkpoint starting: shutdown immediate
+
+PostgreSQL stand-alone backend 16.13 (Debian 16.13-1.pgdg13+1)
+backend> 2026-05-08 23:32:40.761 GMT [166] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.000 s, total=0.001 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/3080FF0, redo lsn=0/3080FF0
+pg_rewind: error: could not fetch remote file "global/pg_control": ERROR:  permission denied for function pg_read_binary_file
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_b psql -c "
+ALTER ROLE replicator WITH SUPERUSER;
+"
+ALTER ROLE
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+/usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
+--source-server='host=pg_b port=5432 dbname=postgres user=replicator password=replicator'
+"
+pg_rewind: servers diverged at WAL location 0/304A0A0 on timeline 1
+pg_rewind: rewinding from last common checkpoint at 0/304A028 on timeline 1
+pg_rewind: Done!
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+ pg_is_in_recovery 
+-------------------
+ f
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_client psql -h pgpool -p 9999 -c "show pool_nodes;"
+Password for user postgres: 
+psql: error: connection to server at "pgpool" (172.18.0.6), port 9999 failed: fe_sendauth: no password supplied
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres -d postgres lab3_client psql -h pgpool -p 9999 -c "show pool_nodes;"
+Error response from daemon: No such container: postgres
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_client psql -h pgpool -p 9999 -c "show pool_nodes;"
+Password for user postgres: 
+psql: error: connection to server at "pgpool" (172.18.0.6), port 9999 failed: fe_sendauth: no password supplied
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | pg_a     | 5432 | down   | up        | 0.333333  | standby | primary | 0          | false             | 0                 |                   |                        | 2026-05-08 23:23:57
+ 1       | pg_b     | 5432 | up     | up        | 0.333333  | primary | primary | 0          | false             | 0                 |                   |                        | 2026-05-08 23:35:59
+ 2       | pg_c     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | true              | 0                 | streaming         | async                  | 2026-05-08 23:35:59
+(3 rows)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pgpool pcp_attach_node 0
+ERROR: connection to socket "/tmp/.s.PGSQL.9898" failed with error "No such file or directory"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS                    PORTS                                                   NAMES
+e8c301798b9e   postgres:16    "docker-entrypoint.s…"   14 minutes ago   Up 13 minutes             5432/tcp                                                lab3_client
+33719b0319a0   task1-pgpool   "docker-entrypoint.s…"   14 minutes ago   Up 13 minutes (healthy)   5432/tcp, 0.0.0.0:9440->9999/tcp, [::]:9440->9999/tcp   lab3_pgpool
+3b3023c0c52e   task1-pg_c     "/usr/local/bin/stan…"   14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:9439->5432/tcp, [::]:9439->5432/tcp             lab3_pg_c
+e71fbf553d9d   task1-pg_b     "/usr/local/bin/stan…"   14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:9438->5432/tcp, [::]:9438->5432/tcp             lab3_pg_b
+a46738f3ecfc   task1-pg_a     "/usr/local/bin/post…"   14 minutes ago   Up 38 seconds (healthy)   0.0.0.0:9437->5432/tcp, [::]:9437->5432/tcp             lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pgpool pcp_attach_node 0
+ERROR: connection to socket "/tmp/.s.PGSQL.9898" failed with error "No such file or directory"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | pg_a     | 5432 | down   | up        | 0.333333  | standby | primary | 0          | false             | 0                 |                   |                        | 2026-05-08 23:23:57
+ 1       | pg_b     | 5432 | up     | up        | 0.333333  | primary | primary | 0          | true              | 0                 |                   |                        | 2026-05-08 23:35:59
+ 2       | pg_c     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | false             | 0                 | streaming         | async                  | 2026-05-08 23:35:59
+(3 rows)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pgpool psql -p 9999 -c "SELECT pgpool_recovery_node('pg_a', 5432);"
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.9999" failed: No such file or directory
+        Is the server running locally and accepting connections on that socket?
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pgpool
+lab3_pgpool
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | pg_a     | 5432 | up     | up        | 0.333333  | standby | primary | 0          | false             | 50638128          |                   |                        | 2026-05-08 23:38:08
+ 1       | pg_b     | 5432 | up     | up        | 0.333333  | primary | primary | 0          | false             | 0                 |                   |                        | 2026-05-08 23:38:08
+ 2       | pg_c     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | true              | 0                 | streaming         | async                  | 2026-05-08 23:38:08
+(3 rows)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+ pg_is_in_recovery 
+-------------------
+ f
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+touch /var/lib/postgresql/data/standby.signal
+"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a bash -lc "
+echo \"primary_conninfo = 'host=pg_b port=5432 user=replicator password=replicator'\" >> /var/lib/postgresql/data/postgresql.auto.conf
+"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_a
+lab3_pg_a
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pgpool
+lab3_pgpool
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | pg_a     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | false             | 0                 |                   |                        | 2026-05-08 23:40:49
+ 1       | pg_b     | 5432 | up     | up        | 0.333333  | primary | primary | 0          | false             | 0                 |                   |                        | 2026-05-08 23:40:49
+ 2       | pg_c     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | true              | 0                 | streaming         | async                  | 2026-05-08 23:40:49
+(3 rows)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ 
+
+2026-05-09 00:01:13.665 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:01:13.687 GMT [63] LOG:  connection received: host=127.0.0.1 port=49408
+2026-05-09 00:01:16.899 GMT [64] LOG:  connection received: host=172.18.0.3 port=43466
+2026-05-09 00:01:16.909 GMT [64] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:16.909 GMT [64] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:16.910 GMT [64] LOG:  disconnection: session time: 0:00:00.011 user=postgres database=postgres host=172.18.0.3 port=43466
+2026-05-09 00:01:17.182 GMT [65] LOG:  connection received: host=172.18.0.3 port=43476
+2026-05-09 00:01:17.186 GMT [65] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:17.186 GMT [65] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:17.195 GMT [65] LOG:  disconnection: session time: 0:00:00.013 user=postgres database=postgres host=172.18.0.3 port=43476
+2026-05-09 00:01:18.666 GMT [66] FATAL:  could not start WAL streaming: ERROR:  replication slot "slot_b" does not exist
+2026-05-09 00:01:18.666 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:01:18.756 GMT [74] LOG:  connection received: host=127.0.0.1 port=49440
+2026-05-09 00:01:21.914 GMT [75] LOG:  connection received: host=172.18.0.3 port=43482
+2026-05-09 00:01:21.922 GMT [75] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:21.922 GMT [75] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:21.923 GMT [75] LOG:  disconnection: session time: 0:00:00.008 user=postgres database=postgres host=172.18.0.3 port=43482
+2026-05-09 00:01:22.210 GMT [76] LOG:  connection received: host=172.18.0.3 port=43484
+2026-05-09 00:01:22.216 GMT [76] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:22.216 GMT [76] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:22.225 GMT [76] LOG:  disconnection: session time: 0:00:00.014 user=postgres database=postgres host=172.18.0.3 port=43484
+2026-05-09 00:01:23.669 GMT [77] FATAL:  could not start WAL streaming: ERROR:  replication slot "slot_b" does not exist
+2026-05-09 00:01:23.669 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:01:23.840 GMT [85] LOG:  connection received: host=127.0.0.1 port=34506
+2026-05-09 00:01:26.924 GMT [86] LOG:  connection received: host=172.18.0.3 port=59252
+2026-05-09 00:01:26.930 GMT [86] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:26.930 GMT [86] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:26.931 GMT [86] LOG:  disconnection: session time: 0:00:00.006 user=postgres database=postgres host=172.18.0.3 port=59252
+2026-05-09 00:01:27.236 GMT [87] LOG:  connection received: host=172.18.0.3 port=59260
+2026-05-09 00:01:27.240 GMT [87] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:27.240 GMT [87] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:27.249 GMT [87] LOG:  disconnection: session time: 0:00:00.013 user=postgres database=postgres host=172.18.0.3 port=59260
+2026-05-09 00:01:29.270 GMT [88] FATAL:  could not start WAL streaming: ERROR:  replication slot "slot_b" does not exist
+2026-05-09 00:01:29.270 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:01:29.515 GMT [96] LOG:  connection received: host=127.0.0.1 port=34532
+2026-05-09 00:01:32.525 GMT [97] LOG:  connection received: host=172.18.0.3 port=59264
+2026-05-09 00:01:32.530 GMT [97] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:32.530 GMT [97] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:32.531 GMT [97] LOG:  disconnection: session time: 0:00:00.005 user=postgres database=postgres host=172.18.0.3 port=59264
+2026-05-09 00:01:32.850 GMT [98] LOG:  connection received: host=172.18.0.3 port=59278
+2026-05-09 00:01:32.855 GMT [98] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:32.855 GMT [98] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:32.864 GMT [98] LOG:  disconnection: session time: 0:00:00.014 user=postgres database=postgres host=172.18.0.3 port=59278
+2026-05-09 00:01:34.265 GMT [99] FATAL:  could not start WAL streaming: ERROR:  replication slot "slot_b" does not exist
+2026-05-09 00:01:34.265 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:01:34.588 GMT [107] LOG:  connection received: host=127.0.0.1 port=54582
+2026-05-09 00:01:37.533 GMT [108] LOG:  connection received: host=172.18.0.3 port=58888
+2026-05-09 00:01:37.537 GMT [108] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:37.537 GMT [108] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:37.539 GMT [108] LOG:  disconnection: session time: 0:00:00.006 user=postgres database=postgres host=172.18.0.3 port=58888
+2026-05-09 00:01:37.877 GMT [109] LOG:  connection received: host=172.18.0.3 port=58902
+2026-05-09 00:01:37.882 GMT [109] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:01:37.882 GMT [109] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:01:37.891 GMT [109] LOG:  disconnection: session time: 0:00:00.014 user=postgres database=postgres host=172.18.0.3 port=58902
+2026-05-09 00:01:39.264 GMT [110] FATAL:  could not start WAL streaming: ERROR:  replication slot "slot_b" does not exist
+2026-05-09 00:01:39.264 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:01:39.656 GMT [118] LOG:  connection received: host=127.0.0.1 port=54614
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "
+SELECT pg_create_physical_replication_slot('slot_b');
+"
+ pg_create_physical_replication_slot 
+-------------------------------------
+ (slot_b,)
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_b
+lab3_pg_b
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_b psql -c "
+SELECT sender_host, status
+FROM pg_stat_wal_receiver;
+"
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker logs lab3_pg_b --tail 100
+2026-05-09 00:02:03.574 GMT [164] LOG:  connection received: host=172.18.0.3 port=53012
+2026-05-09 00:02:03.577 GMT [164] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:03.577 GMT [164] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:03.588 GMT [164] LOG:  disconnection: session time: 0:00:00.014 user=postgres database=postgres host=172.18.0.3 port=53012
+2026-05-09 00:02:04.864 GMT [165] LOG:  started streaming WAL from primary at 0/3000000 on timeline 2
+2026-05-09 00:02:04.865 GMT [165] LOG:  replication terminated by primary server
+2026-05-09 00:02:04.865 GMT [165] DETAIL:  End of WAL reached on timeline 2 at 0/304B7D8.
+2026-05-09 00:02:04.868 GMT [14] LOG:  invalid record length at 0/304AE90: expected at least 24, got 0
+2026-05-09 00:02:04.868 GMT [165] FATAL:  terminating walreceiver process due to administrator command
+2026-05-09 00:02:04.868 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:04.868 GMT [14] LOG:  invalid record length at 0/304AE90: expected at least 24, got 0
+2026-05-09 00:02:04.868 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:04.870 GMT [25] LOG:  disconnection: session time: 0:01:01.894 user=replicator database= host=172.18.0.5 port=40534
+2026-05-09 00:02:05.629 GMT [174] LOG:  connection received: host=127.0.0.1 port=59200
+2026-05-09 00:02:08.178 GMT [175] LOG:  connection received: host=172.18.0.3 port=50346
+2026-05-09 00:02:08.184 GMT [175] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:08.184 GMT [175] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:08.185 GMT [175] LOG:  disconnection: session time: 0:00:00.007 user=postgres database=postgres host=172.18.0.3 port=50346
+2026-05-09 00:02:08.601 GMT [176] LOG:  connection received: host=172.18.0.3 port=50352
+2026-05-09 00:02:08.606 GMT [176] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:08.606 GMT [176] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:08.616 GMT [176] LOG:  disconnection: session time: 0:00:00.014 user=postgres database=postgres host=172.18.0.3 port=50352
+2026-05-09 00:02:09.868 GMT [14] LOG:  invalid record length at 0/304AE90: expected at least 24, got 0
+2026-05-09 00:02:09.868 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:10.698 GMT [185] LOG:  connection received: host=127.0.0.1 port=59234
+2026-05-09 00:02:13.190 GMT [186] LOG:  connection received: host=172.18.0.3 port=50356
+2026-05-09 00:02:13.195 GMT [186] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:13.195 GMT [186] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:13.196 GMT [186] LOG:  disconnection: session time: 0:00:00.006 user=postgres database=postgres host=172.18.0.3 port=50356
+2026-05-09 00:02:13.625 GMT [187] LOG:  connection received: host=172.18.0.3 port=50362
+2026-05-09 00:02:13.628 GMT [187] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:13.628 GMT [187] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:13.637 GMT [187] LOG:  disconnection: session time: 0:00:00.012 user=postgres database=postgres host=172.18.0.3 port=50362
+2026-05-09 00:02:14.871 GMT [14] LOG:  invalid record length at 0/304AE90: expected at least 24, got 0
+2026-05-09 00:02:14.871 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:15.776 GMT [196] LOG:  connection received: host=127.0.0.1 port=43896
+2026-05-09 00:02:18.201 GMT [197] LOG:  connection received: host=172.18.0.3 port=53350
+2026-05-09 00:02:18.206 GMT [197] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:18.206 GMT [197] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:18.207 GMT [197] LOG:  disconnection: session time: 0:00:00.006 user=postgres database=postgres host=172.18.0.3 port=53350
+2026-05-09 00:02:18.654 GMT [198] LOG:  connection received: host=172.18.0.3 port=53358
+2026-05-09 00:02:18.659 GMT [198] LOG:  connection authenticated: identity="postgres" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:3)
+2026-05-09 00:02:18.659 GMT [198] LOG:  connection authorized: user=postgres database=postgres
+2026-05-09 00:02:18.668 GMT [198] LOG:  disconnection: session time: 0:00:00.014 user=postgres database=postgres host=172.18.0.3 port=53358
+2026-05-09 00:02:19.200 GMT [10] LOG:  starting PostgreSQL 16.13 (Debian 16.13-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-09 00:02:19.200 GMT [10] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-09 00:02:19.200 GMT [10] LOG:  listening on IPv6 address "::", port 5432
+2026-05-09 00:02:19.209 GMT [10] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-09 00:02:19.217 GMT [14] LOG:  database system was interrupted while in recovery at log time 2026-05-08 23:51:16 GMT
+2026-05-09 00:02:19.217 GMT [14] HINT:  If this has occurred more than once some data might be corrupted and you might need to choose an earlier recovery target.
+2026-05-09 00:02:19.322 GMT [14] LOG:  entering standby mode
+2026-05-09 00:02:19.323 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:02:19.329 GMT [15] LOG:  started streaming WAL from primary at 0/3000000 on timeline 2
+2026-05-09 00:02:19.330 GMT [15] LOG:  replication terminated by primary server
+2026-05-09 00:02:19.330 GMT [15] DETAIL:  End of WAL reached on timeline 2 at 0/304B7D8.
+2026-05-09 00:02:19.332 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:02:19.332 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:02:19.332 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:19.332 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:02:19.332 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:20.210 GMT [18] LOG:  connection received: host=127.0.0.1 port=43940
+2026-05-09 00:02:20.210 GMT [18] FATAL:  the database system is starting up
+2026-05-09 00:02:21.231 GMT [21] LOG:  connection received: host=127.0.0.1 port=43944
+2026-05-09 00:02:21.231 GMT [21] FATAL:  the database system is starting up
+2026-05-09 00:02:22.254 GMT [24] LOG:  connection received: host=127.0.0.1 port=43950
+2026-05-09 00:02:22.254 GMT [24] FATAL:  the database system is starting up
+2026-05-09 00:02:23.210 GMT [26] LOG:  connection received: host=172.18.0.3 port=53362
+2026-05-09 00:02:23.210 GMT [26] FATAL:  the database system is starting up
+2026-05-09 00:02:23.277 GMT [28] LOG:  connection received: host=127.0.0.1 port=43958
+2026-05-09 00:02:23.277 GMT [28] FATAL:  the database system is starting up
+2026-05-09 00:02:23.867 GMT [36] LOG:  connection received: host=[local]
+2026-05-09 00:02:23.867 GMT [36] FATAL:  the database system is starting up
+2026-05-09 00:02:24.253 GMT [44] LOG:  connection received: host=127.0.0.1 port=43984
+2026-05-09 00:02:24.253 GMT [44] FATAL:  the database system is starting up
+2026-05-09 00:02:24.298 GMT [46] LOG:  connection received: host=127.0.0.1 port=43988
+2026-05-09 00:02:24.299 GMT [46] FATAL:  the database system is starting up
+2026-05-09 00:02:24.335 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:02:24.336 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:25.318 GMT [50] LOG:  connection received: host=127.0.0.1 port=59094
+2026-05-09 00:02:25.318 GMT [50] FATAL:  the database system is starting up
+2026-05-09 00:02:26.343 GMT [53] LOG:  connection received: host=127.0.0.1 port=59098
+2026-05-09 00:02:26.343 GMT [53] FATAL:  the database system is starting up
+2026-05-09 00:02:27.370 GMT [56] LOG:  connection received: host=127.0.0.1 port=59110
+2026-05-09 00:02:27.370 GMT [56] FATAL:  the database system is starting up
+2026-05-09 00:02:28.393 GMT [59] LOG:  connection received: host=127.0.0.1 port=59112
+2026-05-09 00:02:28.393 GMT [59] FATAL:  the database system is starting up
+2026-05-09 00:02:29.333 GMT [68] LOG:  connection received: host=127.0.0.1 port=59120
+2026-05-09 00:02:29.333 GMT [68] FATAL:  the database system is starting up
+2026-05-09 00:02:29.335 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:02:29.335 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:02:29.415 GMT [71] LOG:  connection received: host=127.0.0.1 port=59122
+2026-05-09 00:02:29.415 GMT [71] FATAL:  the database system is starting up
+2026-05-09 00:02:30.435 GMT [74] LOG:  connection received: host=127.0.0.1 port=59142
+2026-05-09 00:02:30.435 GMT [74] FATAL:  the database system is starting up
+2026-05-09 00:02:31.455 GMT [77] LOG:  connection received: host=127.0.0.1 port=59158
+2026-05-09 00:02:31.455 GMT [77] FATAL:  the database system is starting up
+2026-05-09 00:02:32.479 GMT [80] LOG:  connection received: host=127.0.0.1 port=59164
+2026-05-09 00:02:32.479 GMT [80] FATAL:  the database system is starting up
+2026-05-09 00:02:33.502 GMT [83] LOG:  connection received: host=127.0.0.1 port=59172
+2026-05-09 00:02:33.503 GMT [83] FATAL:  the database system is starting up
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker stop lab3_pg_b
+lab3_pg_b
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_b bash -lc "
+rm -rf /var/lib/postgresql/data/*
+"
+Error response from daemon: container e71fbf553d9dd3ea22d0d39b973c0f7fe6f49862f082d38090d31c5de0e59dfb is not running
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_b
+lab3_pg_b
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u root lab3_pg_b bash -lc "
+rm -rf /var/lib/postgresql/data/*
+"
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_b bash -lc "
+pg_basebackup -h pg_a -D /var/lib/postgresql/data \
+-U replicator -P -R
+"
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_b bash -lc " "
+export PGPASSWORD=replicator &&
+pg_basebackup -h pg_a -U replicator -D /var/lib/postgresql/data -P -R
+"
+waiting for checkpoint
+30881/30881 kB (100%), 0/1 tablespace
+30881/30881 kB (100%), 1/1 tablespace
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_b
+lab3_pg_b
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "
+SELECT client_addr, state, sync_state
+FROM pg_stat_replication;
+"
+ client_addr | state | sync_state 
+-------------+-------+------------
+(0 rows)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker logs lab3_pg_b --tail 100
+2026-05-09 00:03:05.505 GMT [237] LOG:  connection received: host=127.0.0.1 port=46114
+2026-05-09 00:03:05.505 GMT [237] FATAL:  the database system is starting up
+2026-05-09 00:03:05.823 GMT [239] LOG:  connection received: host=127.0.0.1 port=46122
+2026-05-09 00:03:05.823 GMT [239] FATAL:  the database system is starting up
+2026-05-09 00:03:07.438 GMT [242] LOG:  connection received: host=127.0.0.1 port=46130
+2026-05-09 00:03:07.439 GMT [242] FATAL:  the database system is starting up
+2026-05-09 00:03:08.462 GMT [245] LOG:  connection received: host=127.0.0.1 port=46146
+2026-05-09 00:03:08.463 GMT [245] FATAL:  the database system is starting up
+2026-05-09 00:03:09.485 GMT [248] LOG:  connection received: host=127.0.0.1 port=46156
+2026-05-09 00:03:09.485 GMT [248] FATAL:  the database system is starting up
+2026-05-09 00:03:10.506 GMT [251] LOG:  connection received: host=127.0.0.1 port=46166
+2026-05-09 00:03:10.506 GMT [251] FATAL:  the database system is starting up
+2026-05-09 00:03:10.562 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:10.562 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:03:11.181 GMT [261] LOG:  connection received: host=127.0.0.1 port=46186
+2026-05-09 00:03:11.181 GMT [261] FATAL:  the database system is starting up
+2026-05-09 00:03:11.530 GMT [263] LOG:  connection received: host=127.0.0.1 port=46218
+2026-05-09 00:03:11.530 GMT [263] FATAL:  the database system is starting up
+2026-05-09 00:03:12.553 GMT [266] LOG:  connection received: host=127.0.0.1 port=46220
+2026-05-09 00:03:12.554 GMT [266] FATAL:  the database system is starting up
+2026-05-09 00:03:13.580 GMT [269] LOG:  connection received: host=127.0.0.1 port=46236
+2026-05-09 00:03:13.580 GMT [269] FATAL:  the database system is starting up
+2026-05-09 00:03:14.605 GMT [272] LOG:  connection received: host=127.0.0.1 port=46248
+2026-05-09 00:03:14.605 GMT [272] FATAL:  the database system is starting up
+2026-05-09 00:03:15.564 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:15.564 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:03:15.625 GMT [276] LOG:  connection received: host=127.0.0.1 port=46256
+2026-05-09 00:03:15.626 GMT [276] FATAL:  the database system is starting up
+2026-05-09 00:03:16.260 GMT [285] LOG:  connection received: host=127.0.0.1 port=34720
+2026-05-09 00:03:16.260 GMT [285] FATAL:  the database system is starting up
+2026-05-09 00:03:16.646 GMT [287] LOG:  connection received: host=127.0.0.1 port=34744
+2026-05-09 00:03:16.646 GMT [287] FATAL:  the database system is starting up
+2026-05-09 00:03:17.669 GMT [290] LOG:  connection received: host=127.0.0.1 port=34748
+2026-05-09 00:03:17.669 GMT [290] FATAL:  the database system is starting up
+2026-05-09 00:03:18.694 GMT [293] LOG:  connection received: host=127.0.0.1 port=34756
+2026-05-09 00:03:18.694 GMT [293] FATAL:  the database system is starting up
+2026-05-09 00:03:19.717 GMT [296] LOG:  connection received: host=127.0.0.1 port=34758
+2026-05-09 00:03:19.717 GMT [296] FATAL:  the database system is starting up
+2026-05-09 00:03:20.566 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:20.566 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:03:20.745 GMT [300] LOG:  connection received: host=127.0.0.1 port=34770
+2026-05-09 00:03:20.745 GMT [300] FATAL:  the database system is starting up
+2026-05-09 00:03:21.344 GMT [309] LOG:  connection received: host=127.0.0.1 port=34788
+2026-05-09 00:03:21.344 GMT [309] FATAL:  the database system is starting up
+2026-05-09 00:03:21.766 GMT [311] LOG:  connection received: host=127.0.0.1 port=34800
+2026-05-09 00:03:21.767 GMT [311] FATAL:  the database system is starting up
+2026-05-09 00:03:22.789 GMT [314] LOG:  connection received: host=127.0.0.1 port=34802
+2026-05-09 00:03:22.789 GMT [314] FATAL:  the database system is starting up
+2026-05-09 00:03:23.816 GMT [317] LOG:  connection received: host=127.0.0.1 port=34814
+2026-05-09 00:03:23.816 GMT [317] FATAL:  the database system is starting up
+2026-05-09 00:03:24.839 GMT [320] LOG:  connection received: host=127.0.0.1 port=34824
+2026-05-09 00:03:24.839 GMT [320] FATAL:  the database system is starting up
+2026-05-09 00:03:25.566 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:25.566 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:03:25.863 GMT [324] LOG:  connection received: host=127.0.0.1 port=48466
+2026-05-09 00:03:25.864 GMT [324] FATAL:  the database system is starting up
+2026-05-09 00:03:26.429 GMT [333] LOG:  connection received: host=127.0.0.1 port=48490
+2026-05-09 00:03:26.429 GMT [333] FATAL:  the database system is starting up
+2026-05-09 00:03:26.887 GMT [335] LOG:  connection received: host=127.0.0.1 port=48506
+2026-05-09 00:03:26.887 GMT [335] FATAL:  the database system is starting up
+2026-05-09 00:03:27.911 GMT [338] LOG:  connection received: host=127.0.0.1 port=48508
+2026-05-09 00:03:27.911 GMT [338] FATAL:  the database system is starting up
+2026-05-09 00:03:28.936 GMT [341] LOG:  connection received: host=127.0.0.1 port=48524
+2026-05-09 00:03:28.936 GMT [341] FATAL:  the database system is starting up
+2026-05-09 00:03:46.210 GMT [10] LOG:  starting PostgreSQL 16.13 (Debian 16.13-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-09 00:03:46.210 GMT [10] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-09 00:03:46.210 GMT [10] LOG:  listening on IPv6 address "::", port 5432
+2026-05-09 00:03:46.219 GMT [10] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-09 00:03:46.228 GMT [14] LOG:  database system was interrupted while in recovery at log time 2026-05-08 23:51:16 GMT
+2026-05-09 00:03:46.228 GMT [14] HINT:  If this has occurred more than once some data might be corrupted and you might need to choose an earlier recovery target.
+2026-05-09 00:03:46.326 GMT [14] LOG:  entering standby mode
+2026-05-09 00:03:46.326 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:46.333 GMT [15] LOG:  started streaming WAL from primary at 0/3000000 on timeline 2
+2026-05-09 00:03:46.333 GMT [15] LOG:  replication terminated by primary server
+2026-05-09 00:03:46.333 GMT [15] DETAIL:  End of WAL reached on timeline 2 at 0/304B7D8.
+2026-05-09 00:03:46.336 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:46.336 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:46.336 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:03:46.336 GMT [14] LOG:  invalid resource manager ID 85 at 0/304ADE0
+2026-05-09 00:03:46.336 GMT [14] LOG:  waiting for WAL to become available at 0/3002000
+2026-05-09 00:03:47.222 GMT [18] LOG:  connection received: host=127.0.0.1 port=53554
+2026-05-09 00:03:47.222 GMT [18] FATAL:  the database system is starting up
+2026-05-09 00:03:48.245 GMT [29] LOG:  connection received: host=127.0.0.1 port=53572
+2026-05-09 00:03:48.245 GMT [29] FATAL:  the database system is starting up
+2026-05-09 00:03:49.264 GMT [32] LOG:  connection received: host=127.0.0.1 port=53584
+2026-05-09 00:03:49.265 GMT [32] FATAL:  the database system is starting up
+2026-05-09 00:03:50.286 GMT [35] LOG:  connection received: host=127.0.0.1 port=53598
+2026-05-09 00:03:50.286 GMT [35] FATAL:  the database system is starting up
+2026-05-09 00:03:51.267 GMT [44] LOG:  connection received: host=127.0.0.1 port=53600
+2026-05-09 00:03:51.267 GMT [44] FATAL:  the database system is starting up
+2026-05-09 00:03:51.309 GMT [46] LOG:  connection received: host=127.0.0.1 port=53610
+2026-05-09 00:03:51.310 GMT [46] FATAL:  the database system is starting up
+2026-05-09 00:03:51.339 GMT [14] PANIC:  could not open file "pg_wal/000000020000000000000003": No such file or directory
+2026-05-09 00:03:51.346 GMT [48] LOG:  fetching timeline history file for timeline 2 from primary server
+2026-05-09 00:03:51.346 GMT [48] FATAL:  could not create file "pg_wal/xlogtemp.48": No such file or directory
+2026-05-09 00:03:52.332 GMT [50] LOG:  connection received: host=127.0.0.1 port=53632
+2026-05-09 00:03:52.333 GMT [50] FATAL:  the database system is starting up
+2026-05-09 00:03:52.907 GMT [10] LOG:  startup process (PID 14) was terminated by signal 6: Aborted
+2026-05-09 00:03:52.907 GMT [10] LOG:  aborting startup due to startup process failure
+2026-05-09 00:03:52.908 GMT [10] LOG:  database system is shut down
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker start lab3_pg_b
+lab3_pg_b
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pg_b
+lab3_pg_b
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_a psql -c "
+SELECT client_addr, state, sync_state
+FROM pg_stat_replication;
+"
+ client_addr |   state   | sync_state 
+-------------+-----------+------------
+ 172.18.0.4  | streaming | async
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ ./demo.sh
+== Pgpool view ==
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | pg_a     | 5432 | up     | up        | 0.333333  | primary | primary | 0          | true              | 0                 |                   |                        | 2026-05-08 23:59:37
+ 1       | pg_b     | 5432 | down   | up        | 0.333333  | standby | standby | 0          | false             | 54056             |                   |                        | 2026-05-09 00:02:23
+ 2       | pg_c     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | false             | 33247696          |                   |                        | 2026-05-08 23:59:37
+(3 rows)
+
+== Primary replication view ==
+ application_name |   state   | sync_state | write_lag | flush_lag | replay_lag 
+------------------+-----------+------------+-----------+-----------+------------
+ walreceiver      | streaming | async      |           |           | 
+(1 row)
+
+== Insert through Pgpool into primary A ==
+BEGIN
+INSERT 0 1
+INSERT 0 1
+COMMIT
+== B should have the row immediately ==
+ rows_on_b 
+-----------
+         1
+(1 row)
+
+ orders_on_b 
+-------------
+           1
+(1 row)
+
+== C usually does NOT have it immediately ==
+ rows_on_c_now 
+---------------
+             0
+(1 row)
+
+ orders_on_c_now 
+-----------------
+               0
+(1 row)
+
+== Waiting 12 seconds so delayed standby C can replay ==
+ rows_on_c_after_delay 
+-----------------------
+                     0
+(1 row)
+
+ orders_on_c_after_delay 
+-------------------------
+                       0
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker exec -u postgres lab3_pg_b psql -c "SELECT pg_is_in_recovery();"
+ pg_is_in_recovery 
+-------------------
+ t
+(1 row)
+
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pgpool
+lab3_pgpool
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ docker restart lab3_pgpool
+lab3_pgpool
+antero@ANTERO:~/study/ITMO/РСХД/lab_3/lab3/task1$ ./demo.sh
+== Pgpool view ==
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
+ 0       | pg_a     | 5432 | up     | up        | 0.333333  | primary | primary | 0          | true              | 0                 |                   |                        | 2026-05-09 00:08:19
+ 1       | pg_b     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | false             | 0                 |                   |                        | 2026-05-09 00:08:19
+ 2       | pg_c     | 5432 | up     | up        | 0.333333  | standby | standby | 0          | false             | 33249016          |                   |                        | 2026-05-09 00:08:19
+(3 rows)
+
+== Primary replication view ==
+ application_name |   state   | sync_state | write_lag | flush_lag | replay_lag 
+------------------+-----------+------------+-----------+-----------+------------
+ walreceiver      | streaming | async      |           |           | 
+(1 row)
+
+== Insert through Pgpool into primary A ==
+BEGIN
+INSERT 0 1
+INSERT 0 1
+COMMIT
+== B should have the row immediately ==
+ rows_on_b 
+-----------
+         1
+(1 row)
+
+ orders_on_b 
+-------------
+           1
+(1 row)
+
+== C usually does NOT have it immediately ==
+ rows_on_c_now 
+---------------
+             0
+(1 row)
+
+ orders_on_c_now 
+-----------------
+               0
+(1 row)
+
+== Waiting 12 seconds so delayed standby C can replay ==
+ rows_on_c_after_delay 
+-----------------------
+                     0
+(1 row)
+
+ orders_on_c_after_delay 
+-------------------------
+                       0
+(1 row)
