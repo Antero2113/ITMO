@@ -1,106 +1,63 @@
-# lab3/task1 - Этап 1
-
-Локальная конфигурация для Docker Desktop на Windows:
-- `pg_a` - primary
-- `pg_b` - synchronous standby
-- `pg_c` - asynchronous standby с задержкой `10s`
-- `pgpool` - единая точка входа на порту `9999`
-- `client` - отдельный контейнер для `psql`- подключений и демонстрации
-
-## Что делает конфигурация
-
-1. `pg_a` инициализирует пользователя `replicator`, задает пароль пользователю `postgres`, создает БД `appdb`, таблицы `customers` и `orders`, заполняет их тестовыми данными и создает физические replication slots `slot_b` и `slot_c`.
-2. `pg_b` поднимается через `pg_basebackup` от `pg_a`, подключается как `application_name = pg_b` и становится синхронной репликой.
-3. `pg_c` поднимается через `pg_basebackup` от `pg_a`, подключается как `application_name = pg_c`, использует `recovery_min_apply_delay = '10s'` и становится асинхронной delayed-репликой.
-4. `pgpool` работает в режиме `streaming-replication` и слушает порт `9999`.
-5. Для сетевых подключений используется парольная аутентификация `scram-sha-256`, а для локальных подключений внутри postgres-контейнеров - `peer`.
-
-## Быстрый запуск
-
-```cmd
-start.cmd
+```bash id="2mxy2s"
+# 1. Подготовка (внутри client)
+docker cp 1_prepare.sh lab3_client:/tmp/1_prepare.sh
+docker exec -it lab3_client bash /tmp/1_prepare.sh
 ```
 
-Проверить, что все поднялось:
-
-```powershell
-docker compose ps
+```bash id="vjjlwm"
+# 2. Симуляция падения primary (с хоста)
+./2_simulate_primary_crash.sh
 ```
 
-Посмотреть логи, если что-то пошло не так:
-
-```powershell
-docker compose logs -f pg_a
-docker compose logs -f pg_b
-docker compose logs -f pg_c
-docker compose logs -f pgpool
+```bash id="yk7h4i"
+# 3. Просмотр логов (с хоста)
+./3_show_failover_logs.sh
 ```
 
-## Демонстрация этапа 1
-
-Запустить готовую демонстрацию:
-
-```cmd
-demo.cmd
+```bash id="9v4zmx"
+# 4. Promotion pg_b -> primary (с хоста)
+./4_promote_standby.sh
 ```
 
-Скрипт покажет:
-- `SHOW pool_nodes;` через `pgpool`
-- `pg_stat_replication` на primary
-- вставку в `customers` и `orders` через `pgpool`
-- наличие новых строк на `pg_b` сразу
-- отсутствие строк на `pg_c` сразу после коммита
-- появление строк на `pg_c` спустя 12 секунд
-
-## Ручные команды
-
-### Подключение к Pgpool
-
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pgpool -p 9999 -U postgres -d appdb"
+```bash id="1bnx8j"
+# 5. Проверка работы после failover (внутри client)
+docker cp 5_post_failover_check.sh lab3_client:/tmp/5_post_failover_check.sh
+docker exec -it lab3_client bash /tmp/5_post_failover_check.sh
 ```
 
-### Проверка ролей напрямую
-
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_a -U postgres -d postgres -c 'select pg_is_in_recovery();'"
-
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_b -U postgres -d postgres -c 'select pg_is_in_recovery();'"
-
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_c -U postgres -d postgres -c 'select pg_is_in_recovery();'"
+```bash id="fjjlwm"
+# 6. Возврат старого primary (с хоста)
+./6_restore_old_primary.sh
 ```
 
-Ожидаемый результат:
-- на `pg_a` - `f`
-- на `pg_b` и `pg_c` - `t`
-
-### Проверка репликации на primary
-
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_a -U postgres -d postgres -c \"select application_name, state, sync_state from pg_stat_replication order by application_name;\""
+```bash id="6nsx7i"
+# 7. Rejoin pg_a как standby (с хоста)
+./7_rejoin_old_primary.sh
 ```
 
-Ожидаемо:
-- `pg_b` имеет `sync_state = 'sync'`
-- `pg_c` имеет `sync_state = 'async'`
-
-### Проверка данных на B и C
-
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_b -U postgres -d appdb -c \"select * from customers order by id desc limit 5;\""
-
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_c -U postgres -d appdb -c \"select * from customers order by id desc limit 5;\""
+```bash id="q5ww84"
+# 8. Финальная проверка (внутри client)
+docker cp 11_rebuild_c.sh lab3_client:/tmp/11_rebuild_c.sh
+docker exec -it lab3_client bash /tmp/11_rebuild_c.sh
 ```
 
-## Остановка
-
-```cmd
-stop.cmd
+```
+docker cp 5_post_failover_check.sh lab3_client:/tmp/5_post_failover_check.sh
+docker exec -it lab3_client bash /tmp/5_post_failover_check.sh
 ```
 
-## Полный сброс томов и повторная инициализация
+```
+docker logs lab3_pg_a --tail 100
+docker exec -u postgres lab3_pg_a psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_b psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_c psql -c "select pg_is_in_recovery();"
 
-```cmd
-reset.cmd
-start.cmd
+docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_a \
+psql -U postgres -c "
+select name, setting
+from pg_settings
+order by name;
+"
+
+docker exec -u postgres lab3_pg_a psql -c "SELECT * FROM pg_replication_slots;"
 ```

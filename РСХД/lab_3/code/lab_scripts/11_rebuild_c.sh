@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[pg_c] stopping container if running..."
+# docker stop lab3_pg_c || true
+
+echo "[pg_c] cleaning old data directory..."
+docker exec -u root lab3_pg_c bash -lc "
+rm -rf /var/lib/postgresql/data/*
+"
+
+echo "[pg_c] taking basebackup from pg_b..."
+
+docker exec -u postgres -e PGPASSWORD=replicator lab3_pg_c bash -lc "
+pg_basebackup \
+  -h lab3_pg_b \
+  -U replicator \
+  -D /var/lib/postgresql/data \
+  -P -R \
+  -X stream \
+  -S slot_c \
+  -c fast
+
+chown -R postgres:postgres /var/lib/postgresql/data
+chmod 700 /var/lib/postgresql/data
+"
+
+docker exec -u postgres lab3_pg_b bash -lc "
+touch /var/lib/postgresql/data/standby.signal
+"
+
+echo "[pg_c] starting container..."
+docker restart lab3_pg_c
+docker restart lab3_pgpool
+
+sleep 10
+
+docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
+
+
+echo
+echo "== DONE: pg_c replication rebuilt cleanly =="
