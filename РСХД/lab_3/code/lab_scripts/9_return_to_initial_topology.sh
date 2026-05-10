@@ -1,27 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "== STEP 1: PROMOTE pg_a =="
+echo
+echo "== STEP 1: REBUILD pg_b AS STANDBY OF pg_a =="
+echo
+
+echo "== stop old pg_b =="
 
 docker stop lab3_pg_b
 
+echo
+echo "== check pg_a state =="
+
 docker exec -u postgres lab3_pg_a psql -c "SELECT pg_is_in_recovery();"
+
+echo
+echo "== create replication slot slot_b on pg_a =="
+
 docker exec -u postgres lab3_pg_a psql -c "
 SELECT pg_create_physical_replication_slot('slot_b');
 "
 
-docker start lab3_pg_b
-# docker exec -u postgres lab3_pg_b bash -lc "
-# /usr/lib/postgresql/16/bin/pg_ctl \
-# -D /var/lib/postgresql/data \
-# stop -m immediate
-# "
-# docker exec -u root lab3_pg_b bash -lc "rm -f /var/lib/postgresql/data/postmaster.pid"
+echo
+echo "== start pg_b container =="
 
-# docker exec -u postgres lab3_pg_b bash -lc "
-# /usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
-# --source-server='host=pg_a port=5432 dbname=postgres user=replicator password=replicator'
-# "
+docker start lab3_pg_b
+
+echo
+echo "== rebuild pg_b from pg_a (pg_basebackup) =="
 
 docker exec -u root lab3_pg_b bash -lc "
 rm -rf /var/lib/postgresql/data/*
@@ -40,66 +46,29 @@ pg_basebackup \
 chown -R postgres:postgres /var/lib/postgresql/data
 "
 
+echo
+echo "== mark pg_b as standby =="
+
 docker exec -u postgres lab3_pg_b bash -lc "
 touch /var/lib/postgresql/data/standby.signal
 "
 
+echo
+echo "== restart pg_b and pgpool =="
+
 docker restart lab3_pg_b
 docker restart lab3_pgpool
 
-# docker run --rm \
-# -v task1_pg_b_data:/var/lib/postgresql/data \
-# bash bash -lc "
-# cat > /var/lib/postgresql/data/postgresql.auto.conf <<'EOF'
-# primary_conninfo = 'host=pg_a port=5432 user=replicator password=replicator application_name=pg_b'
-# primary_slot_name = 'slot_c'
-# recovery_min_apply_delay = '0s'
-# EOF
-# "
+echo
+echo "== wait for replication stabilization =="
 
 sleep 10
 
-docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
+echo
+echo "== pgpool node status =="
+
+docker exec -e PGPASSWORD=postgres -u postgres lab3_client \
+psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
 
 echo
-echo "== DONE: pg_a primary, pg_b standby =="
-
-# docker stop lab3_pg_c
-# docker start lab3_pg_c
-
-# docker exec -u root lab3_pg_c bash -lc "rm -rf /var/lib/postgresql/data/*"
-# docker exec -u postgres -e PGPASSWORD=replicator lab3_pg_c bash -lc "
-# pg_basebackup -h lab3_pg_b -U replicator -D /var/lib/postgresql/data -P -R"
-
-# docker exec -u postgres lab3_pg_c bash -lc "
-# touch /var/lib/postgresql/data/standby.signal
-# "
-
-# docker run --rm \
-# -v lab3_pg_c_data:/var/lib/postgresql/data \
-# busybox sh -c "
-# cp /var/lib/postgresql/data/postgresql.auto.conf /tmp/backup.conf && \
-# grep -v 'primary_conninfo\|primary_slot_name\|recovery_min_apply_delay' \
-# /tmp/backup.conf \
-# > /var/lib/postgresql/data/postgresql.auto.conf
-# "
-
-# docker run --rm \
-# -v lab3_pg_c_data:/var/lib/postgresql/data \
-# busybox sh -c "
-# echo \"primary_conninfo = 'host=pg_b port=5432 user=replicator password=replicator application_name=pg_c'\" >> /var/lib/postgresql/data/postgresql.auto.conf
-
-# echo \"primary_slot_name = 'slot_c'\" >> /var/lib/postgresql/data/postgresql.auto.conf
-
-# echo \"recovery_min_apply_delay = '10s'\" >> /var/lib/postgresql/data/postgresql.auto.conf
-# "
-
-# docker restart lab3_pg_c
-# docker restart lab3_pgpool
-
-# sleep 10
-
-# docker exec -e PGPASSWORD=postgres -u postgres lab3_client psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
-
-# echo
-# echo "== DONE: pg_c replication rebuilded =="
+echo "== DONE: pg_a is primary, pg_b is standby and fully resynced =="

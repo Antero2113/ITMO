@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo
+echo "== NODE ROLE AND REPLICATION CHECK =="
+echo
+
 check_node () {
   local node=$1
 
-  echo "--- $node ---"
+  echo
+  echo "== node: $node =="
 
   docker exec lab3_$node \
     env PGPASSWORD=postgres \
@@ -23,14 +28,15 @@ SELECT
 "
 }
 
-echo "== NODE ROLES =="
+echo
+echo "== node roles =="
 
 check_node pg_a
 check_node pg_b
 check_node pg_c
 
 echo
-echo "== Replication state on pg_b =="
+echo "== replication state (pg_b as upstream) =="
 
 docker exec lab3_pg_b \
   env PGPASSWORD=postgres \
@@ -49,7 +55,7 @@ FROM pg_stat_replication;
 "
 
 echo
-echo "== Replication slots on pg_b =="
+echo "== replication slots (pg_b) =="
 
 docker exec lab3_pg_b \
   env PGPASSWORD=postgres \
@@ -61,3 +67,6 @@ docker exec lab3_pg_b \
 SELECT slot_name, active
 FROM pg_replication_slots;
 "
+
+echo
+echo "== DONE: replication topology inspected successfully =="

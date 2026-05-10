@@ -1,106 +1,197 @@
-# lab3/task1 - Этап 1
+# Lab3 | PostgreSQL cascade replication
 
-Локальная конфигурация для Docker Desktop на Windows:
-- `pg_a` - primary
-- `pg_b` - synchronous standby
-- `pg_c` - asynchronous standby с задержкой `10s`
-- `pgpool` - единая точка входа на порту `9999`
-- `client` - отдельный контейнер для `psql`- подключений и демонстрации
+## Topology
 
-## Что делает конфигурация
+* pg_a — primary
+* pg_b — synchronous standby
+* pg_c — asynchronous standby (replication delay: 10s)
+* pgpool — load balancer / routing endpoint (port 9999)
+* client — dedicated container for SQL execution and demo flows
 
-1. `pg_a` инициализирует пользователя `replicator`, задает пароль пользователю `postgres`, создает БД `appdb`, таблицы `customers` и `orders`, заполняет их тестовыми данными и создает физические replication slots `slot_b` и `slot_c`.
-2. `pg_b` поднимается через `pg_basebackup` от `pg_a`, подключается как `application_name = pg_b` и становится синхронной репликой.
-3. `pg_c` поднимается через `pg_basebackup` от `pg_a`, подключается как `application_name = pg_c`, использует `recovery_min_apply_delay = '10s'` и становится асинхронной delayed-репликой.
-4. `pgpool` работает в режиме `streaming-replication` и слушает порт `9999`.
-5. Для сетевых подключений используется парольная аутентификация `scram-sha-256`, а для локальных подключений внутри postgres-контейнеров - `peer`.
+---
 
-## Быстрый запуск
+## System overview
 
-```cmd
+### Primary node (pg_a)
+
+Responsibilities:
+
+* cluster initialization
+* creation of replication user `replicator`
+* creation of test schema and initial data
+* creation of physical replication slots:
+
+  * slot_b → pg_b
+  * slot_c → pg_c
+
+---
+
+### Standby node (pg_b)
+
+* initialized via `pg_basebackup` from pg_a
+* configured as synchronous standby
+* `application_name = pg_b`
+
+---
+
+### Cascading standby (pg_c)
+
+* initialized via `pg_basebackup` from pg_a
+* asynchronous replication
+* delayed apply configured:
+
+  * `recovery_min_apply_delay = '10s'`
+* `application_name = pg_c`
+
+---
+
+### Pgpool
+
+* unified entry point for client traffic
+* port: 9999
+* provides cluster routing and node visibility via `show pool_nodes`
+
+---
+
+## Startup
+
+```bash
 start.cmd
 ```
 
-Проверить, что все поднялось:
+---
 
-```powershell
+## Cluster state check
+
+```bash
 docker compose ps
 ```
 
-Посмотреть логи, если что-то пошло не так:
+---
 
-```powershell
-docker compose logs -f pg_a
-docker compose logs -f pg_b
-docker compose logs -f pg_c
-docker compose logs -f pgpool
+## Logs (primary debugging)
+
+```bash
+docker compose logs pg_a
+docker compose logs pg_b
+docker compose logs pg_c
+docker compose logs pgpool
 ```
 
-## Демонстрация этапа 1
+---
 
-Запустить готовую демонстрацию:
+## Node role verification
 
-```cmd
-demo.cmd
+```bash
+docker exec -u postgres lab3_pg_a psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_b psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_c psql -c "select pg_is_in_recovery();"
 ```
 
-Скрипт покажет:
-- `SHOW pool_nodes;` через `pgpool`
-- `pg_stat_replication` на primary
-- вставку в `customers` и `orders` через `pgpool`
-- наличие новых строк на `pg_b` сразу
-- отсутствие строк на `pg_c` сразу после коммита
-- появление строк на `pg_c` спустя 12 секунд
+Expected:
 
-## Ручные команды
+* pg_a → f (primary)
+* pg_b → t (standby)
+* pg_c → t (standby)
 
-### Подключение к Pgpool
+---
 
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pgpool -p 9999 -U postgres -d appdb"
+## Replication status (primary)
+
+```bash
+docker exec -u postgres lab3_pg_a psql -c "
+select application_name, state, sync_state
+from pg_stat_replication
+order by application_name;
+"
 ```
 
-### Проверка ролей напрямую
+Expected:
 
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_a -U postgres -d postgres -c 'select pg_is_in_recovery();'"
+* pg_b → sync
+* pg_c → async
 
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_b -U postgres -d postgres -c 'select pg_is_in_recovery();'"
+---
 
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_c -U postgres -d postgres -c 'select pg_is_in_recovery();'"
+## Replication slots
+
+```bash
+docker exec -u postgres lab3_pg_a psql -c "select * from pg_replication_slots;"
 ```
 
-Ожидаемый результат:
-- на `pg_a` - `f`
-- на `pg_b` и `pg_c` - `t`
+---
 
-### Проверка репликации на primary
+## System configuration snapshot
 
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_a -U postgres -d postgres -c \"select application_name, state, sync_state from pg_stat_replication order by application_name;\""
+```bash
+docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_a psql -U postgres -c "
+select name, setting
+from pg_settings
+order by name;
+"
 ```
 
-Ожидаемо:
-- `pg_b` имеет `sync_state = 'sync'`
-- `pg_c` имеет `sync_state = 'async'`
+---
 
-### Проверка данных на B и C
+## Pgpool status
 
-```powershell
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_b -U postgres -d appdb -c \"select * from customers order by id desc limit 5;\""
-
-docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_c -U postgres -d appdb -c \"select * from customers order by id desc limit 5;\""
+```bash
+docker exec -e PGPASSWORD=postgres -u postgres lab3_client \
+psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
 ```
 
-## Остановка
+---
 
-```cmd
-stop.cmd
+## Demo execution
+
+```bash
+./demo.sh
 ```
 
-## Полный сброс томов и повторная инициализация
+### Validates:
 
-```cmd
-reset.cmd
-start.cmd
+* write routing via pgpool
+* synchronous replication (pg_b)
+* delayed async replication (pg_c)
+* replication lag visibility (≈10–12s)
+* eventual consistency across nodes
+
+---
+
+## Manual validation
+
+### Connect via pgpool
+
+```bash
+docker exec -e PGPASSWORD=postgres -u postgres lab3_client \
+psql -h pgpool -p 9999 -U postgres -d postgres
+```
+
+---
+
+### Role checks
+
+```bash
+docker exec -u postgres lab3_pg_a psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_b psql -c "select pg_is_in_recovery();"
+docker exec -u postgres lab3_pg_c psql -c "select pg_is_in_recovery();"
+```
+
+---
+
+### Data verification
+
+```bash
+docker exec -u postgres lab3_pg_b psql -c "select * from customers order by id desc limit 5;"
+docker exec -u postgres lab3_pg_c psql -c "select * from customers order by id desc limit 5;"
+```
+
+
+---
+
+## Reset environment
+
+```bash
+./reset.sh
+./start.sh
 ```

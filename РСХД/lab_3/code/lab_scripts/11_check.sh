@@ -2,18 +2,17 @@
 
 set -e
 
-echo "=============================="
-echo " FINAL CHECK "
-echo "=============================="
-
 echo
-echo "== TOPOLOGY =="
+echo "== FINAL CHECK: FULL REPLICATION TEST =="
+echo
+
+echo "== topology (pgpool nodes) =="
 
 docker exec -e PGPASSWORD=postgres -u postgres lab3_client \
 psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
 
 echo
-echo "== CREATE TABLES =="
+echo "== create tables =="
 
 docker exec -i -e PGPASSWORD=postgres -u postgres lab3_client \
 psql -a -e -h pgpool -p 9999 -U postgres postgres <<EOF
@@ -35,7 +34,7 @@ CREATE TABLE IF NOT EXISTS operations (
 EOF
 
 echo
-echo "== INSERT DATA =="
+echo "== insert data =="
 
 docker exec -i -e PGPASSWORD=postgres -u postgres lab3_client \
 psql -a -e -h pgpool -p 9999 -U postgres postgres <<EOF
@@ -57,7 +56,7 @@ COMMIT;
 EOF
 
 echo
-echo "== UPDATE DATA =="
+echo "== update data =="
 
 docker exec -i -e PGPASSWORD=postgres -u postgres lab3_client \
 psql -a -e -h pgpool -p 9999 -U postgres postgres <<EOF
@@ -82,7 +81,7 @@ COMMIT;
 EOF
 
 echo
-echo "== READ THROUGH PGPOOL =="
+echo "== read through pgpool =="
 
 docker exec -i -e PGPASSWORD=postgres -u postgres lab3_client \
 psql -a -e -h pgpool -p 9999 -U postgres postgres <<EOF
@@ -94,7 +93,7 @@ SELECT * FROM operations ORDER BY id;
 EOF
 
 echo
-echo "== PRIMARY pg_a =="
+echo "== primary node (pg_a) =="
 
 docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_a \
 psql -U postgres -c "
@@ -106,7 +105,7 @@ select * from operations order by id;
 "
 
 echo
-echo "== STANDBY pg_b =="
+echo "== standby node (pg_b) =="
 
 docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_b \
 psql -U postgres -c "
@@ -118,12 +117,12 @@ select * from operations order by id;
 "
 
 echo
-echo "== WAIT ASYNC REPLICATION =="
+echo "== wait for async replication =="
 
 sleep 12
 
 echo
-echo "== CASCADE STANDBY pg_c =="
+echo "== cascade standby (pg_c) =="
 
 docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_c \
 psql -U postgres -c "
@@ -135,10 +134,7 @@ select * from operations order by id;
 "
 
 echo
-echo "== REPLICATION STATUS =="
-
-echo
-echo "--- pg_a ---"
+echo "== replication status (pg_a) =="
 
 docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_a \
 psql -U postgres -c "
@@ -150,7 +146,7 @@ from pg_stat_replication;
 "
 
 echo
-echo "--- pg_b ---"
+echo "== replication status (pg_b) =="
 
 docker exec -e PGPASSWORD=postgres -u postgres lab3_pg_b \
 psql -U postgres -c "
@@ -162,6 +158,4 @@ from pg_stat_replication;
 "
 
 echo
-echo "=============================="
-echo " DONE "
-echo "=============================="
+echo "== DONE: full read/write/replication verification completed successfully =="
