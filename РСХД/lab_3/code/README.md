@@ -1,150 +1,106 @@
-# Настройка каскадной репликации PostgreSQL с pgpool-II
+# lab3/task1 - Этап 1
 
-Этот проект демонстрирует настройку каскадной репликации PostgreSQL с использованием pgpool-II, где:
-- Node A является первичным сервером
-- Node B является синхронной репликой Node A
-- Node C является асинхронной репликой Node B
+Локальная конфигурация для Docker Desktop на Windows:
+- `pg_a` - primary
+- `pg_b` - synchronous standby
+- `pg_c` - asynchronous standby с задержкой `10s`
+- `pgpool` - единая точка входа на порту `9999`
+- `client` - отдельный контейнер для `psql`- подключений и демонстрации
 
-## Требования
+## Что делает конфигурация
 
-- Docker
-- Docker Compose
-- PostgreSQL клиент (для проверки репликации)
+1. `pg_a` инициализирует пользователя `replicator`, задает пароль пользователю `postgres`, создает БД `appdb`, таблицы `customers` и `orders`, заполняет их тестовыми данными и создает физические replication slots `slot_b` и `slot_c`.
+2. `pg_b` поднимается через `pg_basebackup` от `pg_a`, подключается как `application_name = pg_b` и становится синхронной репликой.
+3. `pg_c` поднимается через `pg_basebackup` от `pg_a`, подключается как `application_name = pg_c`, использует `recovery_min_apply_delay = '10s'` и становится асинхронной delayed-репликой.
+4. `pgpool` работает в режиме `streaming-replication` и слушает порт `9999`.
+5. Для сетевых подключений используется парольная аутентификация `scram-sha-256`, а для локальных подключений внутри postgres-контейнеров - `peer`.
 
-## Структура проекта
+## Быстрый запуск
 
-```
-.
-├── docker-compose.yml
-├── node_a/
-│   ├── Dockerfile
-│   ├── conf/
-│   │   ├── postgresql.conf
-│   │   └── pg_hba.conf
-│   └── scripts/
-│       └── 01-init.sh
-├── node_b/
-│   ├── Dockerfile
-│   ├── conf/
-│   │   ├── postgresql.conf
-│   │   └── pg_hba.conf
-│   └── scripts/
-│       └── 01-init.sh
-├── node_c/
-│   ├── Dockerfile
-│   ├── conf/
-│   │   ├── postgresql.conf
-│   │   └── pg_hba.conf
-│   └── scripts/
-│       └── 01-init.sh
-├── pgpool/
-│   ├── Dockerfile
-│   └── conf/
-│       ├── pgpool.conf
-│       └── pool_hba.conf
-└── scripts/
-    └── check_replication.sh
+```cmd
+start.cmd
 ```
 
-## Запуск
+Проверить, что все поднялось:
 
-1. Создайте необходимые директории для данных:
-```bash
-mkdir -p node_a/data node_b/data node_c/data
+```powershell
+docker compose ps
 ```
 
-2. Запустите кластер:
-```bash
-docker-compose up -d
+Посмотреть логи, если что-то пошло не так:
+
+```powershell
+docker compose logs -f pg_a
+docker compose logs -f pg_b
+docker compose logs -f pg_c
+docker compose logs -f pgpool
 ```
 
-3. Дождитесь инициализации всех узлов (может занять несколько минут):
-```bash
-docker-compose ps
+## Демонстрация этапа 1
+
+Запустить готовую демонстрацию:
+
+```cmd
+demo.cmd
 ```
 
-## Проверка работоспособности
+Скрипт покажет:
+- `SHOW pool_nodes;` через `pgpool`
+- `pg_stat_replication` на primary
+- вставку в `customers` и `orders` через `pgpool`
+- наличие новых строк на `pg_b` сразу
+- отсутствие строк на `pg_c` сразу после коммита
+- появление строк на `pg_c` спустя 12 секунд
 
-1. Проверка статуса репликации:
-```bash
-./scripts/check_replication.sh
+## Ручные команды
+
+### Подключение к Pgpool
+
+```powershell
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pgpool -p 9999 -U postgres -d appdb"
 ```
 
-Скрипт выполнит следующие проверки:
-- Статус репликации на всех узлах
-- Задержку репликации между узлами
-- Тестовую запись данных и их репликацию
+### Проверка ролей напрямую
 
-## Подключение к базе данных
+```powershell
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_a -U postgres -d postgres -c 'select pg_is_in_recovery();'"
 
-- Через pgpool-II (рекомендуется для приложений):
-  ```
-  Host: localhost
-  Port: 9999
-  Database: testdb
-  User: postgres
-  Password: postgres
-  ```
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_b -U postgres -d postgres -c 'select pg_is_in_recovery();'"
 
-- Напрямую к узлам:
-  - Node A: localhost:5432
-  - Node B: localhost:5433
-  - Node C: localhost:5434
-
-## Особенности конфигурации
-
-1. Node A (Primary):
-   - Настроен как первичный сервер
-   - Синхронная репликация на Node B
-   - WAL архивирование включено
-
-2. Node B (Standby):
-   - Синхронная репликация с Node A
-   - Асинхронная репликация на Node C
-   - Настроен как промежуточный узел
-
-3. Node C (Standby):
-   - Асинхронная репликация с Node B
-   - Настроен как конечный узел
-
-4. pgpool-II:
-   - Настроен для балансировки нагрузки
-   - Поддерживает автоматическое переключение при отказе
-   - Мониторинг состояния узлов
-
-## Мониторинг
-
-1. Проверка статуса узлов:
-```bash
-docker-compose ps
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_c -U postgres -d postgres -c 'select pg_is_in_recovery();'"
 ```
 
-2. Просмотр логов:
-```bash
-docker-compose logs -f [node_a|node_b|node_c|pgpool]
+Ожидаемый результат:
+- на `pg_a` - `f`
+- на `pg_b` и `pg_c` - `t`
+
+### Проверка репликации на primary
+
+```powershell
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_a -U postgres -d postgres -c \"select application_name, state, sync_state from pg_stat_replication order by application_name;\""
 ```
 
-3. Проверка репликации:
-```bash
-./scripts/check_replication.sh
+Ожидаемо:
+- `pg_b` имеет `sync_state = 'sync'`
+- `pg_c` имеет `sync_state = 'async'`
+
+### Проверка данных на B и C
+
+```powershell
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_b -U postgres -d appdb -c \"select * from customers order by id desc limit 5;\""
+
+docker compose exec client bash -lc "PGPASSWORD=postgres psql -h pg_c -U postgres -d appdb -c \"select * from customers order by id desc limit 5;\""
 ```
 
 ## Остановка
 
-```bash
-docker-compose down
+```cmd
+stop.cmd
 ```
 
-Для полной очистки данных:
-```bash
-docker-compose down -v
-rm -rf node_a/data node_b/data node_c/data
+## Полный сброс томов и повторная инициализация
+
+```cmd
+reset.cmd
+start.cmd
 ```
-
-## Примечания
-
-- Все пароли в конфигурации установлены для демонстрационных целей
-- В продакшн-среде необходимо использовать более сложные пароли
-- Рекомендуется настроить мониторинг и оповещения
-- Для продакшн-среды рекомендуется настроить SSL
-- Необходимо настроить регулярное резервное копирование 
