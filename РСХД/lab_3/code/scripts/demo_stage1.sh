@@ -7,8 +7,9 @@ TOKEN="SYNC_ASYNC_DEMO_$(date +%s)"
 echo "== Pgpool view =="
 psql -h pgpool -p 9999 -U postgres -d postgres -c "SHOW pool_nodes;"
 
-echo "== Primary replication view =="
+echo "== Replication view =="
 psql -h pg_a -p 5432 -U postgres -d postgres -c "SELECT application_name, state, sync_state, write_lag, flush_lag, replay_lag FROM pg_stat_replication ORDER BY application_name;"
+psql -h pg_b -p 5432 -U postgres -d postgres -c "SELECT application_name, state, sync_state, write_lag, flush_lag, replay_lag FROM pg_stat_replication ORDER BY application_name;"
 
 echo "== Insert through Pgpool into primary A =="
 psql -h pgpool -p 9999 -U postgres -d appdb <<SQL

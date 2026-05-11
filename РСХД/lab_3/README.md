@@ -72,10 +72,10 @@ docker compose ps
 ## Logs (primary debugging)
 
 ```bash
-docker compose logs pg_a
-docker compose logs pg_b
-docker compose logs pg_c
-docker compose logs pgpool
+docker logs lab3_pg_a --tail 100
+docker logs lab3_pg_b --tail 100
+docker logs lab3_pg_c --tail 100
+docker logs lab3_pgpool --tail 100
 ```
 
 ---
@@ -146,6 +146,22 @@ psql -h pgpool -p 9999 -U postgres -c "show pool_nodes;"
 
 ```bash
 ./demo.sh
+```
+
+## Configuration check
+
+```bash
+docker exec lab3_pg_a cat /var/lib/postgresql/data/postgresql.conf
+docker exec lab3_pg_a cat /var/lib/postgresql/data/pg_hba.conf
+docker exec lab3_pg_a cat /var/lib/postgresql/data/postgresql.auto.conf
+
+docker exec lab3_pg_b cat /var/lib/postgresql/data/postgresql.conf
+docker exec lab3_pg_b cat /var/lib/postgresql/data/pg_hba.conf
+docker exec lab3_pg_b cat /var/lib/postgresql/data/postgresql.auto.conf
+
+docker exec lab3_pg_c cat /var/lib/postgresql/data/postgresql.conf
+docker exec lab3_pg_c cat /var/lib/postgresql/data/pg_hba.conf
+docker exec lab3_pg_c cat /var/lib/postgresql/data/postgresql.auto.conf
 ```
 
 ### Validates:

@@ -7,7 +7,6 @@ ALTER ROLE postgres WITH PASSWORD 'postgres';
 CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'replicator';
 CREATE DATABASE appdb OWNER postgres;
 SELECT pg_create_physical_replication_slot('slot_b');
-SELECT pg_create_physical_replication_slot('slot_c');
 SQL
 
 psql -v ON_ERROR_STOP=1 --username postgres --dbname appdb <<'SQL'
