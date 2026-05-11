@@ -10,53 +10,45 @@ echo "== step 1: stop old primary (pg_a) =="
 echo "Stopping pg_a..."
 docker stop lab3_pg_a
 
-echo
-echo "== step 2: prepare pg_a data directory =="
-
-echo "Cleaning pg_a volume..."
 
 echo
-echo "== step 3: start pg_a container =="
+echo "== step 2: start pg_a container =="
 
 docker start lab3_pg_a
 
 echo
-echo "== step 4: sync pg_a with new primary (pg_b) =="
+echo "== rebuild pg_a from pg_b (pg_basebackup) =="
 
-docker exec -u postgres lab3_pg_b psql -c "
-ALTER ROLE replicator WITH SUPERUSER;
-"
+docker exec -u root lab3_pg_a bash -lc "
+rm -rf /var/lib/postgresql/data/*
 
-docker exec -u postgres lab3_pg_a bash -lc "
-/usr/lib/postgresql/16/bin/pg_ctl \
--D /var/lib/postgresql/data \
-stop -m immediate
-"
+export PGPASSWORD=replicator
 
-docker exec -u root lab3_pg_a bash -lc "rm -f /var/lib/postgresql/data/postmaster.pid"
+pg_basebackup \
+  -h lab3_pg_b \
+  -U replicator \
+  -D /var/lib/postgresql/data \
+  -P -R \
+  -X stream \
+  -S slot_a \
+  -c fast
 
-docker exec -u postgres lab3_pg_a bash -lc "
-/usr/lib/postgresql/16/bin/pg_rewind -D /var/lib/postgresql/data \
---source-server='host=pg_b port=5432 dbname=postgres user=replicator password=replicator'
+chown -R postgres:postgres /var/lib/postgresql/data
 "
 
 docker restart lab3_pg_a
 
 echo
-echo "== step 5: configure pg_a as standby =="
+echo "== step 4: configure pg_a as standby =="
 
 docker exec -u postgres lab3_pg_a bash -lc "
 touch /var/lib/postgresql/data/standby.signal
 "
 
-docker exec -u postgres lab3_pg_a bash -lc "
-echo \"primary_conninfo = 'host=pg_b port=5432 user=replicator password=replicator'\" >> /var/lib/postgresql/data/postgresql.auto.conf
-"
-
 docker restart lab3_pg_a
 
 echo
-echo "== step 6: restart pgpool =="
+echo "== step 5: restart pgpool =="
 
 docker restart lab3_pgpool
 

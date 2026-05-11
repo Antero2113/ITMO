@@ -21,6 +21,16 @@ docker exec -u postgres lab3_pg_a psql -c "
 SELECT pg_create_physical_replication_slot('slot_b');
 "
 
+docker exec -u postgres lab3_pg_a \
+psql -U postgres -d postgres -c "
+ALTER SYSTEM SET synchronous_standby_names = 'pg_b';
+"
+
+docker exec -u postgres lab3_pg_a \
+psql -U postgres -d postgres -c "
+SELECT pg_reload_conf();
+"
+
 echo
 echo "== start pg_b container =="
 
@@ -33,6 +43,7 @@ docker exec -u root lab3_pg_b bash -lc "
 rm -rf /var/lib/postgresql/data/*
 
 export PGPASSWORD=replicator
+export PGAPPNAME=pg_b
 
 pg_basebackup \
   -h lab3_pg_a \
