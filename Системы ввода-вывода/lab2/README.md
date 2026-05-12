@@ -1,5 +1,5 @@
 ```
-scp -P 2222 -r ch_drv ubuntu@localhost:/home/ubuntu/
+scp -P 2222 -r /home/antero/Documents/var1_drv ubuntu@localhost:/home/ubuntu/
 ```
 
 ```
