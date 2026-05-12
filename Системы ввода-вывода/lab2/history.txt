@@ -1,0 +1,147 @@
+ scp -P 2222 -r /home/antero/Documents/var1_drv ubuntu@localhost:/home/ubuntu/
+ubuntu@localhost's password: 
+Makefile                                                                                                                                                                                       100%  153    27.7KB/s   00:00    
+var1.c                                                                                                                                                                                         100% 2504   343.9KB/s   00:00    
+❯ ssh ubuntu@localhost -p 2222
+ubuntu@localhost's password: 
+Welcome to Ubuntu 20.04.5 LTS (GNU/Linux 5.15.0-1018-generic riscv64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Tue May 12 23:27:27 UTC 2026
+
+  System load:           0.34
+  Usage of /:            30.1% of 8.06GB
+  Memory usage:          2%
+  Swap usage:            0%
+  Processes:             83
+  Users logged in:       1
+  IPv4 address for eth0: 10.0.2.15
+  IPv6 address for eth0: fec0::5054:ff:fe12:3456
+
+ * Ubuntu 20.04 LTS Focal Fossa has reached its end of standard support
+   on 31 May 2025.
+
+   For more details see:
+   https://ubuntu.com/20-04
+
+233 updates can be applied immediately.
+174 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+New release '22.04.5 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Last login: Tue May 12 23:23:37 2026
+ubuntu@ubuntu:~$ cd var1_drv
+ubuntu@ubuntu:~/var1_drv$ ls -la
+total 16
+drwxrwxr-x 2 ubuntu ubuntu 4096 May 12 23:24 .
+drwxr-xr-x 6 ubuntu ubuntu 4096 May 12 23:24 ..
+-rw-rw-r-- 1 ubuntu ubuntu  153 May 12 23:24 Makefile
+-rw-rw-r-- 1 ubuntu ubuntu 2504 May 12 23:24 var1.c
+ubuntu@ubuntu:~/var1_drv$ make
+make -C /lib/modules/5.15.0-1018-generic/build M=/home/ubuntu/var1_drv modules
+make[1]: Entering directory '/usr/src/linux-headers-5.15.0-1018-generic'
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
+  You are using:           gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+  CC [M]  /home/ubuntu/var1_drv/var1.o
+/home/ubuntu/var1_drv/var1.c: In function ‘var1_init’:
+/home/ubuntu/var1_drv/var1.c:100:41: error: macro "class_create" requires 2 arguments, but only 1 given
+  100 |     var1_class = class_create(CLASS_NAME);
+      |                                         ^
+In file included from ./include/linux/device.h:31,
+                 from ./include/linux/node.h:18,
+                 from ./include/linux/cpu.h:17,
+                 from ./include/linux/cacheinfo.h:6,
+                 from ./arch/riscv/include/asm/cacheinfo.h:9,
+                 from ./arch/riscv/include/asm/elf.h:14,
+                 from ./include/linux/elf.h:6,
+                 from ./include/linux/module.h:19,
+                 from /home/ubuntu/var1_drv/var1.c:1:
+./include/linux/device/class.h:273: note: macro "class_create" defined here
+  273 | #define class_create(owner, name)  \
+      | 
+/home/ubuntu/var1_drv/var1.c:100:18: error: ‘class_create’ undeclared (first use in this function); did you mean ‘vfs_create’?
+  100 |     var1_class = class_create(CLASS_NAME);
+      |                  ^~~~~~~~~~~~
+      |                  vfs_create
+/home/ubuntu/var1_drv/var1.c:100:18: note: each undeclared identifier is reported only once for each function it appears in
+make[2]: *** [scripts/Makefile.build:297: /home/ubuntu/var1_drv/var1.o] Error 1
+make[1]: *** [Makefile:1881: /home/ubuntu/var1_drv] Error 2
+make[1]: Leaving directory '/usr/src/linux-headers-5.15.0-1018-generic'
+make: *** [Makefile:4: all] Error 2
+ubuntu@ubuntu:~/var1_drv$ make clean
+make -C /lib/modules/5.15.0-1018-generic/build M=/home/ubuntu/var1_drv clean
+make[1]: Entering directory '/usr/src/linux-headers-5.15.0-1018-generic'
+make[1]: Leaving directory '/usr/src/linux-headers-5.15.0-1018-generic'
+ubuntu@ubuntu:~/var1_drv$ ls -la
+total 16
+drwxrwxr-x 2 ubuntu ubuntu 4096 May 12 23:31 .
+drwxr-xr-x 6 ubuntu ubuntu 4096 May 12 23:24 ..
+-rw-rw-r-- 1 ubuntu ubuntu  153 May 12 23:31 Makefile
+-rw-rw-r-- 1 ubuntu ubuntu 2517 May 12 23:31 var1.c
+ubuntu@ubuntu:~/var1_drv$ make
+make -C /lib/modules/5.15.0-1018-generic/build M=/home/ubuntu/var1_drv modules
+make[1]: Entering directory '/usr/src/linux-headers-5.15.0-1018-generic'
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
+  You are using:           gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+  CC [M]  /home/ubuntu/var1_drv/var1.o
+  MODPOST /home/ubuntu/var1_drv/Module.symvers
+  CC [M]  /home/ubuntu/var1_drv/var1.mod.o
+  LD [M]  /home/ubuntu/var1_drv/var1.ko
+  BTF [M] /home/ubuntu/var1_drv/var1.ko
+Skipping BTF generation for /home/ubuntu/var1_drv/var1.ko due to unavailability of vmlinux
+make[1]: Leaving directory '/usr/src/linux-headers-5.15.0-1018-generic'
+ubuntu@ubuntu:~/var1_drv$ ls -la
+total 992
+drwxrwxr-x 2 ubuntu ubuntu   4096 May 12 23:33 .
+drwxr-xr-x 6 ubuntu ubuntu   4096 May 12 23:24 ..
+-rw-rw-r-- 1 ubuntu ubuntu    197 May 12 23:33 .Module.symvers.cmd
+-rw-rw-r-- 1 ubuntu ubuntu    146 May 12 23:32 .modules.order.cmd
+-rw-rw-r-- 1 ubuntu ubuntu    200 May 12 23:33 .var1.ko.cmd
+-rw-rw-r-- 1 ubuntu ubuntu    118 May 12 23:32 .var1.mod.cmd
+-rw-rw-r-- 1 ubuntu ubuntu  31520 May 12 23:33 .var1.mod.o.cmd
+-rw-rw-r-- 1 ubuntu ubuntu  36456 May 12 23:32 .var1.o.cmd
+-rw-rw-r-- 1 ubuntu ubuntu    153 May 12 23:31 Makefile
+-rw-rw-r-- 1 ubuntu ubuntu      0 May 12 23:33 Module.symvers
+-rw-rw-r-- 1 ubuntu ubuntu     30 May 12 23:32 modules.order
+-rw-rw-r-- 1 ubuntu ubuntu   2517 May 12 23:31 var1.c
+-rw-rw-r-- 1 ubuntu ubuntu 437952 May 12 23:33 var1.ko
+-rw-rw-r-- 1 ubuntu ubuntu     30 May 12 23:32 var1.mod
+-rw-rw-r-- 1 ubuntu ubuntu   1330 May 12 23:33 var1.mod.c
+-rw-rw-r-- 1 ubuntu ubuntu 168104 May 12 23:33 var1.mod.o
+-rw-rw-r-- 1 ubuntu ubuntu 287352 May 12 23:32 var1.o
+ubuntu@ubuntu:~/var1_drv$ sudo insmod var1.ko
+ubuntu@ubuntu:~/var1_drv$ lsmod | grep var1
+var1                   24576  0
+ubuntu@ubuntu:~/var1_drv$ ls -l /dev/var1
+crw------- 1 root root 239, 0 May 12 23:33 /dev/var1
+ubuntu@ubuntu:~/var1_drv$ echo "hello" > /dev/var1
+-bash: /dev/var1: Permission denied
+ubuntu@ubuntu:~/var1_drv$ echo "abcd" > /dev/var1
+-bash: /dev/var1: Permission denied
+ubuntu@ubuntu:~/var1_drv$ echo "123456" > /dev/var1
+-bash: /dev/var1: Permission denied
+ubuntu@ubuntu:~/var1_drv$ echo "hello" | sudo tee /dev/var1
+hello
+ubuntu@ubuntu:~/var1_drv$ echo "abcd" | sudo tee /dev/var1
+abcd
+ubuntu@ubuntu:~/var1_drv$ echo "123456" | sudo tee /dev/var1
+123456
+ubuntu@ubuntu:~/var1_drv$ sudo cat /dev/var1
+6
+5
+7
+ubuntu@ubuntu:~/var1_drv$ 
