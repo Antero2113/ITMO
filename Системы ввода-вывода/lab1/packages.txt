@@ -1,0 +1,146 @@
+❯ qemu-system-riscv32 --version
+QEMU emulator version 9.2.1 (Debian 1:9.2.1+ds-1ubuntu5.2)
+Copyright (c) 2003-2024 Fabrice Bellard and the QEMU Project developers
+❯ riscv32-unknown-elf-gcc --version
+zsh: command not found: riscv32-unknown-elf-gcc
+❯ sudo apt install gcc-riscv64-unknown-elf
+[sudo] password for antero: 
+Следующие пакеты устанавливались автоматически и больше не требуются:
+  bnd                      libbindex-java                libfelix-resolver-java   libjarjar-java            libjgit-java     libmultiverse-core-java  libplexus-container-default-java  libxerces2-java
+  groovy                   libcommons-collections3-java  libfindbugs-java         libjatl-java              libjline2-java   libnative-platform-java  libpolyglot-maven-java            libxml-commons-external-java
+  ivy                      libcommons-lang-java          libgpars-groovy-java     libjavaewah-java          libjna-java      libnative-platform-jni   libqdox-java                      libxpp3-java
+  java-wrappers            libdd-plist-java              libgradle-core-java      libjaxen-java             libjna-jni       libnekohtml-java         libreflectasm-java                libxstream-java
+  kitty-doc                libdom4j-java                 libgradle-plugins-java   libjcifs-java             libjs-sphinxdoc  libobjenesis-java        libreflectasm-java-doc
+  kitty-shell-integration  libfelix-framework-java       libhawtjni-runtime-java  libjcip-annotations-java  libkryo-java     libosgi-annotation-java  librhino-java
+  kitty-terminfo           libfelix-gogo-runtime-java    libjansi-native-java     libjcsp-java              libkxml2-java    libosgi-compendium-java  libsimple-http-java
+  libbcpg-java             libfelix-osgi-obr-java        libjansi1-java           libjformatstring-java     libminlog-java   libosgi-core-java        libxbean-reflect-java
+Для их удаления используйте «sudo apt autoremove».
+
+Установка:
+  gcc-riscv64-unknown-elf
+
+Установка зависимостей:
+  binutils-riscv64-unknown-elf
+
+Сводка:
+  Обновление: 0, Установка: 2, Удаление: 0, Пропуск обновления: 94
+  Объём загрузки: 74,6 MB
+  Требуемое пространство: 403 MB / 43,6 GB доступно
+
+Продолжить? [Д/н] 
+Пол:1 http://archive.ubuntu.com/ubuntu plucky/universe amd64 binutils-riscv64-unknown-elf amd64 2.43.1-4ubuntu1+7 [3 318 kB]
+Пол:2 http://archive.ubuntu.com/ubuntu plucky/universe amd64 gcc-riscv64-unknown-elf amd64 14.2.0+19 [71,2 MB]
+Получено 74,6 MB за 9с (8 507 kB/s)                                                                                                                                                                                             
+Выбор ранее не выбранного пакета binutils-riscv64-unknown-elf.
+(Чтение базы данных … на данный момент установлено 345674 файла и каталога.)
+Подготовка к распаковке …/binutils-riscv64-unknown-elf_2.43.1-4ubuntu1+7_amd64.deb …
+Распаковывается binutils-riscv64-unknown-elf (2.43.1-4ubuntu1+7) …
+Выбор ранее не выбранного пакета gcc-riscv64-unknown-elf.
+Подготовка к распаковке …/gcc-riscv64-unknown-elf_14.2.0+19_amd64.deb …
+Распаковывается gcc-riscv64-unknown-elf (14.2.0+19) …
+Настраивается пакет binutils-riscv64-unknown-elf (2.43.1-4ubuntu1+7) …
+Настраивается пакет gcc-riscv64-unknown-elf (14.2.0+19) …
+Обрабатываются триггеры для man-db (2.13.0-1) …
+Обрабатываются триггеры для libc-bin (2.41-6ubuntu1.2) …
+❯ riscv64-unknown-elf-gcc --version
+riscv64-unknown-elf-gcc (14.2.0+19) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+❯ ls /usr/bin | grep riscv
+qemu-system-riscv32
+qemu-system-riscv64
+riscv64-linux-gnu-addr2line
+riscv64-linux-gnu-ar
+riscv64-linux-gnu-as
+riscv64-linux-gnu-c++filt
+riscv64-linux-gnu-cpp
+riscv64-linux-gnu-cpp-14
+riscv64-linux-gnu-elfedit
+riscv64-linux-gnu-gcc
+riscv64-linux-gnu-gcc-14
+riscv64-linux-gnu-gcc-ar
+riscv64-linux-gnu-gcc-ar-14
+riscv64-linux-gnu-gcc-nm
+riscv64-linux-gnu-gcc-nm-14
+riscv64-linux-gnu-gcc-ranlib
+riscv64-linux-gnu-gcc-ranlib-14
+riscv64-linux-gnu-gcov
+riscv64-linux-gnu-gcov-14
+riscv64-linux-gnu-gcov-dump
+riscv64-linux-gnu-gcov-dump-14
+riscv64-linux-gnu-gcov-tool
+riscv64-linux-gnu-gcov-tool-14
+riscv64-linux-gnu-gprof
+riscv64-linux-gnu-ld
+riscv64-linux-gnu-ld.bfd
+riscv64-linux-gnu-lto-dump
+riscv64-linux-gnu-lto-dump-14
+riscv64-linux-gnu-nm
+riscv64-linux-gnu-objcopy
+riscv64-linux-gnu-objdump
+riscv64-linux-gnu-ranlib
+riscv64-linux-gnu-readelf
+riscv64-linux-gnu-size
+riscv64-linux-gnu-strings
+riscv64-linux-gnu-strip
+riscv64-unknown-elf-addr2line
+riscv64-unknown-elf-ar
+riscv64-unknown-elf-as
+riscv64-unknown-elf-c++
+riscv64-unknown-elf-c++filt
+riscv64-unknown-elf-cpp
+riscv64-unknown-elf-elfedit
+riscv64-unknown-elf-g++
+riscv64-unknown-elf-gcc
+riscv64-unknown-elf-gcc-14.2.0
+riscv64-unknown-elf-gcc-ar
+riscv64-unknown-elf-gcc-nm
+riscv64-unknown-elf-gcc-ranlib
+riscv64-unknown-elf-gcov
+riscv64-unknown-elf-gcov-dump
+riscv64-unknown-elf-gcov-tool
+riscv64-unknown-elf-gprof
+riscv64-unknown-elf-ld
+riscv64-unknown-elf-ld.bfd
+riscv64-unknown-elf-lto-dump
+riscv64-unknown-elf-nm
+riscv64-unknown-elf-objcopy
+riscv64-unknown-elf-objdump
+riscv64-unknown-elf-ranlib
+riscv64-unknown-elf-readelf
+riscv64-unknown-elf-size
+riscv64-unknown-elf-strings
+riscv64-unknown-elf-strip
+❯ riscv64-unknown-elf-gcc -print-multi-lib
+.;
+rv32e/ilp32e;@march=rv32e@mabi=ilp32e
+rv32ea/ilp32e;@march=rv32ea@mabi=ilp32e
+rv32em/ilp32e;@march=rv32em@mabi=ilp32e
+rv32eac/ilp32e;@march=rv32eac@mabi=ilp32e
+rv32emac/ilp32e;@march=rv32emac@mabi=ilp32e
+rv32i/ilp32;@march=rv32i@mabi=ilp32
+rv32ia/ilp32;@march=rv32ia@mabi=ilp32
+rv32im/ilp32;@march=rv32im@mabi=ilp32
+rv32if/ilp32f;@march=rv32if@mabi=ilp32f
+rv32ifd/ilp32d;@march=rv32ifd@mabi=ilp32d
+rv32iaf/ilp32f;@march=rv32iaf@mabi=ilp32f
+rv32iafd/ilp32d;@march=rv32iafd@mabi=ilp32d
+rv32imf/ilp32f;@march=rv32imf@mabi=ilp32f
+rv32imfd/ilp32d;@march=rv32imfd@mabi=ilp32d
+rv32iac/ilp32;@march=rv32iac@mabi=ilp32
+rv32imac/ilp32;@march=rv32imac@mabi=ilp32
+rv32imafc/ilp32f;@march=rv32imafc@mabi=ilp32f
+rv32imafdc/ilp32d;@march=rv32imafdc@mabi=ilp32d
+rv64i/lp64;@march=rv64i@mabi=lp64
+rv64ia/lp64;@march=rv64ia@mabi=lp64
+rv64im/lp64;@march=rv64im@mabi=lp64
+rv64if/lp64f;@march=rv64if@mabi=lp64f
+rv64ifd/lp64d;@march=rv64ifd@mabi=lp64d
+rv64iaf/lp64f;@march=rv64iaf@mabi=lp64f
+rv64iafd/lp64d;@march=rv64iafd@mabi=lp64d
+rv64imf/lp64f;@march=rv64imf@mabi=lp64f
+rv64iac/lp64;@march=rv64iac@mabi=lp64
+rv64imac/lp64;@march=rv64imac@mabi=lp64
+rv64imafc/lp64f;@march=rv64imafc@mabi=lp64f
